@@ -318,8 +318,15 @@ void sci_init(void) {
 //============================================================
 void hwsetup(void)
 {
-    // ★レジスタによっては ReadCheck してから次に進むべしとのこと。あとで修正。HOGE
-    //  発振run/stop, etc.
+    //----------------------------------------------------------------------
+    // Protect Control Register
+    //----------------------------------------------------------------------
+    SYSTEM.PRCR.WORD        = 0xa50b;   // Write-enable all 
+
+    //----------------------------------------------------------------------
+    // Operating Power Consumption Control Register
+    //----------------------------------------------------------------------
+    SYSTEM.OPCCR.BIT.OPCM   = 0x02;     // 中速動作モード1A(max power)
 
     //======================================================================
     // Clock source
@@ -329,10 +336,9 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // HOCO(32MHz)を使いたいが難。精度が+/-1%。PCLKDもそれに依存してしまう。
     //----------------------------------------------------------------------
+    // ★レジスタによっては ReadCheck してから次に進むべしとのこと。あとで修正。HOGE
+    //  発振run/stop, etc.
 
-    //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = 0xa50b;   // クロックソース選択の保護の解除
-    SYSTEM.OPCCR.BIT.OPCM   = 0x02;     // 中速動作モード1A
     //----------------------------------------------------------------------
     SYSTEM.SCKCR.BIT.PCKD   = 0x00;     // PCLKD(Peripheral clock D; ADC module clock): Ndiv=1
     SYSTEM.SCKCR.BIT.PCKB   = 0x00;     // PCLKB(Peripheral clock B; modules but ADC):  Ndiv=1
@@ -349,13 +355,11 @@ void hwsetup(void)
                                         // 0/1/2/3 = {32/36.864/40/50} [MHz]
     //----------------------------------------------------------------------
     // OSC Control Register: (0/1)=(run/stop)
-    SYSTEM.MOSCCR.BYTE      = 0;        // Main clock   (20MHz)
-    SYSTEM.SOSCCR.BYTE      = 1;        // Sub clock    (32.768kHz)
-    SYSTEM.LOCOCR.BYTE      = 1;        // LOCO
-    SYSTEM.HOCOCR.BYTE      = 1;        // HOCO         (32--50MHz; +/-1%)
-    SYSTEM.ILOCOCR.BYTE     = 1;        // IWDT 専用オシレータ
-    //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = 0x0;      // クロックソース選択の保護
+    SYSTEM.MOSCCR.BIT.MOSTP     = 0;    // Main clock   (20MHz)
+    SYSTEM.SOSCCR.BIT.SOSTP     = 1;    // Sub clock    (32.768kHz)
+    SYSTEM.LOCOCR.BIT.LCSTP     = 1;    // LOCO
+    SYSTEM.ILOCOCR.BIT.ILCSTP   = 1;    // IWDT(Independant Watch Dog Timer) clock
+    SYSTEM.HOCOCR.BIT.HCSTP     = 1;    // HOCO         (32--50MHz; +/-1%)
     //----------------------------------------------------------------------
 
     //======================================================================
@@ -376,6 +380,11 @@ void hwsetup(void)
     // SCI setting
     //======================================================================
     sci_init();
+
+    //----------------------------------------------------------------------
+    // Protect Control Register
+    //----------------------------------------------------------------------
+    SYSTEM.PRCR.WORD        = 0x0;      // Write-protect all 
 }
 
 void    gvar_init(void) {
