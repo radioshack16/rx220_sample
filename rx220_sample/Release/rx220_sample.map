@@ -1,0 +1,77 @@
+Optimizing Linkage Editor (V.10.02.00.000)        14-Aug-2015 12:51:33
+
+*** Options ***
+
+-subcommand=C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.hlk
+-noprelink
+-nodebug
+-rom=D=R,D_1=R_1,D_2=R_2
+-nomessage
+-list="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.map"
+-nooptimize
+-start=B_1,R_1,B_2,R_2,B,R,SI/01000,PResetPRG/0FFFF8000,C_1,C_2,C,C$*,D_1,D_2,D,P,PIntPRG,W*/0FFFF8100,FIXEDVECT/0FFFFFFD0
+-nologo
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\dbsct.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\intprg.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\resetprg.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\sbrk.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\vecttbl.obj"
+-library="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.lib"
+-output="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.abs"
+-end
+
+*** Error information ***
+
+*** Mapping List ***
+
+SECTION                            START      END         SIZE   ALIGN
+
+B_1
+                                  00001000  00001000         0   1
+R_1
+                                  00001000  00001000         0   1
+B_2
+                                  00001000  00001000         0   2
+R_2
+                                  00001000  00001000         0   2
+B
+                                  00001000  00001413       414   4
+R
+                                  00001414  00001417         4   4
+SI
+                                  00001418  00001717       300   4
+PResetPRG
+                                  ffff8000  ffff8022        23   1
+C_1
+                                  ffff8100  ffff8100         0   1
+C_2
+                                  ffff8100  ffff8100         0   2
+C
+                                  ffff8100  ffff8117        18   4
+C$DSEC
+                                  ffff8118  ffff813b        24   4
+C$BSEC
+                                  ffff813c  ffff8153        18   4
+C$VECT
+                                  ffff8154  ffff8553       400   4
+D_1
+                                  ffff8554  ffff8554         0   1
+D_2
+                                  ffff8554  ffff8554         0   2
+D
+                                  ffff8554  ffff8557         4   4
+P
+                                  ffff8558  ffff8827       2d0   1
+PIntPRG
+                                  ffff8828  ffff8977       150   1
+W_1
+                                  ffff8978  ffff8978         0   1
+W_2
+                                  ffff8978  ffff8978         0   2
+W
+                                  ffff8978  ffff8978         0   4
+$ADDR_C_FFFFFF80
+                                  ffffff80  ffffff83         4   1
+FIXEDVECT
+                                  ffffffd0  ffffffff        30   4

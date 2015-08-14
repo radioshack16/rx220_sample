@@ -1,32 +1,32 @@
 -------- PROJECT GENERATOR --------
 PROJECT NAME :	rx220_sample
-PROJECT DIRECTORY :	C:\hewwork\rx220_sample\rx220_sample
+PROJECT DIRECTORY :	C:\githubwork\rx220_sample\rx220_sample
 CPU SERIES :	RX200
 CPU TYPE :	RX210
 TOOLCHAIN NAME :	Renesas RX Standard Toolchain
 TOOLCHAIN VERSION :	1.2.1.0
 GENERATION FILES :
-    C:\hewwork\rx220_sample\rx220_sample\dbsct.c
+    C:\githubwork\rx220_sample\rx220_sample\dbsct.c
         Setting of B,R Section
-    C:\hewwork\rx220_sample\rx220_sample\typedefine.h
+    C:\githubwork\rx220_sample\rx220_sample\typedefine.h
         Aliases of Integer Type
-    C:\hewwork\rx220_sample\rx220_sample\sbrk.c
+    C:\githubwork\rx220_sample\rx220_sample\sbrk.c
         Program of sbrk
-    C:\hewwork\rx220_sample\rx220_sample\iodefine.h
+    C:\githubwork\rx220_sample\rx220_sample\iodefine.h
         Definition of I/O Register
-    C:\hewwork\rx220_sample\rx220_sample\intprg.c
+    C:\githubwork\rx220_sample\rx220_sample\intprg.c
         Interrupt Program
-    C:\hewwork\rx220_sample\rx220_sample\vecttbl.c
+    C:\githubwork\rx220_sample\rx220_sample\vecttbl.c
         Initialize of Vector Table
-    C:\hewwork\rx220_sample\rx220_sample\vect.h
+    C:\githubwork\rx220_sample\rx220_sample\vect.h
         Definition of Vector
-    C:\hewwork\rx220_sample\rx220_sample\resetprg.c
+    C:\githubwork\rx220_sample\rx220_sample\resetprg.c
         Reset Program
-    C:\hewwork\rx220_sample\rx220_sample\rx220_sample.c
+    C:\githubwork\rx220_sample\rx220_sample\rx220_sample.c
         Main Program
-    C:\hewwork\rx220_sample\rx220_sample\sbrk.h
+    C:\githubwork\rx220_sample\rx220_sample\sbrk.h
         Header file of sbrk file
-    C:\hewwork\rx220_sample\rx220_sample\stacksct.h
+    C:\githubwork\rx220_sample\rx220_sample\stacksct.h
         Setting of Stack area
 START ADDRESS OF SECTION :
  H'1000	B_1,R_1,B_2,R_2,B,R,SU,SI
