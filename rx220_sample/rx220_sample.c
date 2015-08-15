@@ -28,6 +28,8 @@ void abort(void);
 #define     MTU0_N_PERIOD       20000               // Period = N*(1/20MHz);    20000 -->1ms
 #define     MTU0_N_PERIOD_HALF  (MTU0_N_PERIOD>>1)  // *(1/2)
 
+#define     PRCR_PRKEY          0xA5                // Protect key
+
 //------------------------------------------------------------
 // Global variables
 //------------------------------------------------------------
@@ -321,7 +323,7 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // Protect Control Register
     //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = 0xa50b;   // Write-enable all 
+    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x0B;     // Write-enable all 
 
     //----------------------------------------------------------------------
     // Operating Power Consumption Control Register
@@ -384,7 +386,7 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // Protect Control Register
     //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = 0x0;      // Write-protect all 
+    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x00;     // Write-protect all 
 }
 
 void    gvar_init(void) {
