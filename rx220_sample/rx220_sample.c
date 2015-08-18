@@ -307,9 +307,14 @@ void sci_init(void) {
 //============================================================
 // ADC
 //============================================================
-// ADC start trigger:   MTU0.TGRE, 1ms period
+// Data:                12bit
+// Alignment:           right aligned in 16bit
+// ADC start trigger:   TRG0EN(MTU0.TGRE compare match),
+//                      1ms period
 // Ch count:            12
 // Mode:                single scan
+// Interrupt:           generate interrupt requestS12ADI0 
+//                      on the end of scan
 //
 // LQFP64:
 //  AN00:   pin60:  (PortXX)
@@ -330,6 +335,72 @@ void sci_init(void) {
 //  AN15:   NA
 //------------------------------------------------------------
 void adc_init(void) {
+    MSTP_S12AD = 0;     // Release module stop
+
+    //------------------------------------------------------------
+    // AD Control (Scan) Register
+    //------------------------------------------------------------
+   	S12AD.ADCSR.BIT.ADST    = 0;    // AD Start bit: 0: ADC stop, 1: ADC start          HOGE 
+    //
+	S12AD.ADCSR.BIT.DBLANS  = 0;    // Don't care in single scan.
+	S12AD.ADCSR.BIT.GBADIE  = 0;    // Disable interrupt on the end of group B scan
+	S12AD.ADCSR.BIT.DBLE    = 0;    // Not double trigger mode
+	S12AD.ADCSR.BIT.EXTRG   = 0;    // Select synchronous trigger by MTU, ELC for ADC start
+	S12AD.ADCSR.BIT.TRGE    = 0;    // Disable trigger for ADC start                    HOGE
+	S12AD.ADCSR.BIT.ADIE    = 1;    // Enable Interrupt S12ADI0 on the end of scan
+	S12AD.ADCSR.BIT.ADCS    = 0;    // Scan mode: 0:*single scan, 1: group scan, 2: continuous scan
+   	// S12AD.ADCSR.BIT.ADST           // Don't care AD Start bit in signle scan, later.
+    //------------------------------------------------------------
+ 
+    //------------------------------------------------------------
+    // ADANSA: AD Analog channel select A
+    //------------------------------------------------------------
+    S12AD.ADANSA.WORD = 0xffffh;    //  Enable all 16ch, except:
+    S12AD.ADANSA.BIT.ANSA5  = 0;    //  Disable
+    S12AD.ADANSA.BIT.ANSA7  = 0;    //  Disable
+    S12AD.ADANSA.BIT.ANSA14 = 0;    //  Disable
+    S12AD.ADANSA.BIT.ANSA15 = 0;    //  Disable
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADANSB: AD Analog channel select B
+    //------------------------------------------------------------
+    S12AD.ADANSB.WORD = 0x0000h;    // Not used in single scan.
+
+    //------------------------------------------------------------
+    // ADADS: AD Add-mode channel select
+    //------------------------------------------------------------
+    S12AD.ADADS.WORD = 0x0000h;     // Disable add-mode for all ch.
+
+    //------------------------------------------------------------
+    // ADADC: AD Add count
+    //------------------------------------------------------------
+    S12AD.ADADC.BI.ADC = 0;         // No addition.
+
+    //------------------------------------------------------------
+    // ADCER: AD Control Extention Register
+    //------------------------------------------------------------
+    S12AD.ADCER.ADRFMT = 0;   // right aligned
+    HOGE
+
+
+    
+
+
+
+
+
+
+
+    // SET ETC HOGE
+
+
+
+    // ADRD     HOGE 
+
+    // ADDR0-ADDR15:    // AD Data Register
+    // ADOCDR:          // AD Internal Reference Data Register
+
 
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -346,6 +417,14 @@ void adc_init(void) {
 
 
 
+}
+
+void adc_trigger_enable(int sel) {
+    if (sel==0) {
+	    ADCSR.BIT.TRGE  = 0;    // Disable trigger for ADC start
+    } else {
+	    ADCSR.BIT.TRGE  = 1;    // Enable  trigger for ADC start
+    }
 }
 
 //============================================================
@@ -450,10 +529,11 @@ void main(void)
     IPR(MTU0, TGIA0) = 2;   // Interrupt Priority Level
     IEN(MTU0, TGIA0) = 1;   // Interrupt Enable
 
+    adc_trigger_enable(1);
+
     //------------------------------------------------------------
     // Program main
     //------------------------------------------------------------
-
 	while(1) {
         sw_slide = PORTH.PIDR.BIT.B2;
         switch(sw_slide) {
