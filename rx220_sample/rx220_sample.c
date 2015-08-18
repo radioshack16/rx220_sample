@@ -340,16 +340,16 @@ void adc_init(void) {
     //------------------------------------------------------------
     // AD Control (Scan) Register
     //------------------------------------------------------------
-   	S12AD.ADCSR.BIT.ADST    = 0;    // AD Start bit: 0: ADC stop, 1: ADC start          HOGE 
-    //
+   	S12AD.ADCSR.BIT.ADST    = 0;    // AD Start bit: 0: ADC stop, 1: ADC start
+                                    // Stop while register setting.
 	S12AD.ADCSR.BIT.DBLANS  = 0;    // Don't care in single scan.
 	S12AD.ADCSR.BIT.GBADIE  = 0;    // Disable interrupt on the end of group B scan
 	S12AD.ADCSR.BIT.DBLE    = 0;    // Not double trigger mode
 	S12AD.ADCSR.BIT.EXTRG   = 0;    // Select synchronous trigger by MTU, ELC for ADC start
-	S12AD.ADCSR.BIT.TRGE    = 0;    // Disable trigger for ADC start                    HOGE
+	S12AD.ADCSR.BIT.TRGE    = 0;    // Disable trigger for ADC start. Enable later.
 	S12AD.ADCSR.BIT.ADIE    = 1;    // Enable Interrupt S12ADI0 on the end of scan
 	S12AD.ADCSR.BIT.ADCS    = 0;    // Scan mode: 0:*single scan, 1: group scan, 2: continuous scan
-   	// S12AD.ADCSR.BIT.ADST           // Don't care AD Start bit in signle scan, later.
+   	// S12AD.ADCSR.BIT.ADST         // AD Start bit: auto set/reset by the MPU.
     //------------------------------------------------------------
  
     //------------------------------------------------------------
@@ -380,15 +380,22 @@ void adc_init(void) {
     //------------------------------------------------------------
     // ADCER: AD Control Extention Register
     //------------------------------------------------------------
-    S12AD.ADCER.ADRFMT = 0;   // right aligned
+    S12AD.ADCER.ADRFMT  = 0;        // AD Data Register Formati:    right aligned
+	S12AD.ADCER.ACE     = 1;        // Auto Clear Enable:           Enable
+	S12AD.ADCER.DIAGVAL = 2;        // Diagnose voltage value:      (Vref x 1/2) (Not used)
+	S12AD.ADCER.DIAGLD  = 1;        // Diagnose voltage:            fixed (Not used)
+	S12AD.ADCER.DIAGM   = 0;        // Diagnose:                    Disable 
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADSTRGR: AD Start Trigger select
+    //------------------------------------------------------------
+	S12AD.ADSTRRG.TRSA   = 4;       // TRG0EN (MTU0/TRGE compare match)
+	S12AD.ADSTRRG.TRSB   = 0;       // Group B trigger:             ADTRG0# (Not used)
+    //------------------------------------------------------------
+
     HOGE
-
-
-    
-
-
-
-
+    ADEXICR
 
 
 
@@ -419,11 +426,11 @@ void adc_init(void) {
 
 }
 
-void adc_trigger_enable(int sel) {
-    if (sel==0) {
-	    ADCSR.BIT.TRGE  = 0;    // Disable trigger for ADC start
-    } else {
+void adc_trigger_enable(int trig_enable) {
+    if (trig_enable==1) {
 	    ADCSR.BIT.TRGE  = 1;    // Enable  trigger for ADC start
+    } else {
+	    ADCSR.BIT.TRGE  = 0;    // Disable trigger for ADC start
     }
 }
 
