@@ -351,7 +351,7 @@ void adc_init(void) {
 	S12AD.ADCSR.BIT.TRGE    = 0;    // Disable trigger for ADC start. Enable later.
 	S12AD.ADCSR.BIT.ADIE    = 1;    // Enable Interrupt S12ADI0 on the end of scan
 	S12AD.ADCSR.BIT.ADCS    = 0;    // Scan mode: 0:*single scan, 1: group scan, 2: continuous scan
-   	// S12AD.ADCSR.BIT.ADST         // AD Start bit: auto set/reset by the MPU.
+   	// S12AD.ADCSR.BIT.ADST         // AD Start bit: auto set/reset by the ADC circuit.
     //------------------------------------------------------------
 
     //------------------------------------------------------------
@@ -368,25 +368,28 @@ void adc_init(void) {
     // ADANSB: AD Analog channel select B
     //------------------------------------------------------------
     S12AD.ADANSB.WORD = 0x0000h;    // Not used in single scan.
+    //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADADS: AD Add-mode channel select
     //------------------------------------------------------------
     S12AD.ADADS.WORD = 0x0000h;     // Disable add-mode for all ch.
+    //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADADC: AD Add count
     //------------------------------------------------------------
     S12AD.ADADC.BI.ADC = 0;         // No addition.
+    //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADCER: AD Control Extention Register
     //------------------------------------------------------------
     S12AD.ADCER.ADRFMT  = 0;        // AD Data Register Formati:    right aligned
 	S12AD.ADCER.ACE     = 1;        // Auto Clear Enable:           Enable
-	S12AD.ADCER.DIAGVAL = 2;        // Diagnose voltage value:      (Vref x 1/2) (Not used)
-	S12AD.ADCER.DIAGLD  = 1;        // Diagnose voltage:            fixed (Not used)
-	S12AD.ADCER.DIAGM   = 0;        // Diagnose:                    Disable
+	S12AD.ADCER.DIAGVAL = 2;        // Self diagnose voltage value: (Vref x 1/2) (Not used)
+	S12AD.ADCER.DIAGLD  = 1;        // Self diagnose voltage:       fixed (Not used)
+	S12AD.ADCER.DIAGM   = 0;        // Self diagnose:               Disable
     //------------------------------------------------------------
 
     //------------------------------------------------------------
@@ -429,15 +432,17 @@ void adc_init(void) {
 	S12AD.ADSSTR7   = n;    // AN007
     //------------------------------------------------------------
 
-    // SET ETC HOGE
-    ADDISCR
+    //------------------------------------------------------------
+    // ADDISCR: AD Disconnect Detect Control Register
+    //------------------------------------------------------------
+	S12AD.ADDISCR.BIT.ADNDIS = 0;   // Assist Disconnect Detect: No
+    //------------------------------------------------------------
 
 
-
-    // ADRD     HOGE
-
+    // HOGE
+    // ADRD:            // AD Self Diagnose Data register   (Not used, but can be used)
+    // ADOCDR:          // AD Internal Reference Data Register (Not used)
     // ADDR0-ADDR15:    // AD Data Register
-    // ADOCDR:          // AD Internal Reference Data Register
 
 
 
