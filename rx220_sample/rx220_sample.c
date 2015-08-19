@@ -294,7 +294,7 @@ void sci_init(void) {
     //------------------------------------------------------------
     // SCI1: Bit Rate Register
     //------------------------------------------------------------
-    // 9600bps, PCLK=20MHz, n=0, 
+    // 9600bps, PCLK=20MHz, n=0,
     SCI1.BRR = 64;  // =65.1-1
     //------------------------------------------------------------
 
@@ -313,7 +313,7 @@ void sci_init(void) {
 //                      1ms period
 // Ch count:            12
 // Mode:                single scan
-// Interrupt:           generate interrupt requestS12ADI0 
+// Interrupt:           generate interrupt requestS12ADI0
 //                      on the end of scan
 //
 // LQFP64:
@@ -335,6 +335,8 @@ void sci_init(void) {
 //  AN15:   NA
 //------------------------------------------------------------
 void adc_init(void) {
+    int n;
+
     MSTP_S12AD = 0;     // Release module stop
 
     //------------------------------------------------------------
@@ -351,7 +353,7 @@ void adc_init(void) {
 	S12AD.ADCSR.BIT.ADCS    = 0;    // Scan mode: 0:*single scan, 1: group scan, 2: continuous scan
    	// S12AD.ADCSR.BIT.ADST         // AD Start bit: auto set/reset by the MPU.
     //------------------------------------------------------------
- 
+
     //------------------------------------------------------------
     // ADANSA: AD Analog channel select A
     //------------------------------------------------------------
@@ -384,26 +386,55 @@ void adc_init(void) {
 	S12AD.ADCER.ACE     = 1;        // Auto Clear Enable:           Enable
 	S12AD.ADCER.DIAGVAL = 2;        // Diagnose voltage value:      (Vref x 1/2) (Not used)
 	S12AD.ADCER.DIAGLD  = 1;        // Diagnose voltage:            fixed (Not used)
-	S12AD.ADCER.DIAGM   = 0;        // Diagnose:                    Disable 
+	S12AD.ADCER.DIAGM   = 0;        // Diagnose:                    Disable
     //------------------------------------------------------------
 
     //------------------------------------------------------------
-    // ADSTRGR: AD Start Trigger select
+    // ADSTRGR: AD Start Trigger select Register
     //------------------------------------------------------------
-	S12AD.ADSTRRG.TRSA   = 4;       // TRG0EN (MTU0/TRGE compare match)
-	S12AD.ADSTRRG.TRSB   = 0;       // Group B trigger:             ADTRG0# (Not used)
+	S12AD.ADSTRRG.TRSA  = 4;        // TRG0EN (MTU0/TRGE compare match)
+	S12AD.ADSTRRG.TRSB  = 0;        // Group B trigger:             ADTRG0# (Not used)
     //------------------------------------------------------------
 
-    HOGE
-    ADEXICR
+    //------------------------------------------------------------
+    // ADEXICR: AD Extended Input Control Register
+    //------------------------------------------------------------
+	S12AD.ADEXICR.OCSAD = 0;        // Addtion mode of internal Vref:   No
+	S12AD.ADEXICR.TSS   = 0;        // (Although RX220 does not have TSS bit.)
+	S12AD.ADEXICR.OCS   = 0;        // AD convert internal Vref:        No  // Must be 0 for single scan mode.
+    //------------------------------------------------------------
 
-
+    //------------------------------------------------------------
+    // ADSSTR: AD Sampling State Register
+    //------------------------------------------------------------
+    // Necessary:
+    //  12 <= n <= 255
+    //  T>0.4us  ;Sampling time T=n*(1/fclk)=n*50ns     // fclk=20MHz
+    //------------------------------------------------------------
+    // n=255, T=12.75us     // Tentative
+    //------------------------------------------------------------
+    n=255;
+	S12AD.ADSSTR0   = n;    // AN000
+    //
+	S12AD.ADSSTRL   = n;    // AN008--AN015
+	S12AD.ADSSTRT   = n;    // (Although RX220 does not have Temperature sensor.)
+	S12AD.ADSSTRO   = n;    // internal vref
+    //
+	S12AD.ADSSTR1   = n;    // AN001
+	S12AD.ADSSTR2   = n;    // AN002
+	S12AD.ADSSTR3   = n;    // AN003
+	S12AD.ADSSTR4   = n;    // AN004
+	S12AD.ADSSTR5   = n;    // AN005
+	S12AD.ADSSTR6   = n;    // AN006
+	S12AD.ADSSTR7   = n;    // AN007
+    //------------------------------------------------------------
 
     // SET ETC HOGE
+    ADDISCR
 
 
 
-    // ADRD     HOGE 
+    // ADRD     HOGE
 
     // ADDR0-ADDR15:    // AD Data Register
     // ADOCDR:          // AD Internal Reference Data Register
@@ -414,7 +445,7 @@ void adc_init(void) {
     // Set pin function:
     //////////////////////////////////////////////////////////////////////////////////
     // HOGE
-    // - ADC related port 
+    // - ADC related port
     // - port 4, E to be quiet
     //------------------------------------------------------------
     // MPC(Multi Pin Function Controller)
@@ -442,7 +473,7 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // Protect Control Register
     //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x0B;     // Write-enable all 
+    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x0B;     // Write-enable all
 
     //----------------------------------------------------------------------
     // Operating Power Consumption Control Register
@@ -469,7 +500,7 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // Select Clock source      šRun‘O‚É‚±‚ê‚ªæ‚Å‚æ‚¢‚Ì‚©H
     SYSTEM.SCKCR3.WORD      = 0x0200;   // 0x0100: HOCO (Freq accuracy: +/- 1%)
-                                        // 0x0200:*MAIN 20MHz Xtal 
+                                        // 0x0200:*MAIN 20MHz Xtal
                                         // 0x0300: SUB
     //----------------------------------------------------------------------
     SYSTEM.HOCOCR2.BYTE     = 0;        // HOCO control register2: freq select
@@ -487,7 +518,7 @@ void hwsetup(void)
     // Port
     //======================================================================
 	PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
-                                //      1 0 1 1     // 0: input, 1: output 
+                                //      1 0 1 1     // 0: input, 1: output
 	PORTH.PODR.BYTE     =0x00;
     //----------------------------------------------------------------------
 
@@ -510,7 +541,7 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // Protect Control Register
     //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x00;     // Write-protect all 
+    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x00;     // Write-protect all
 }
 
 void    gvar_init(void) {
