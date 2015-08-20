@@ -150,7 +150,12 @@ void Excep_RTC_ALARM(void){  }
 void Excep_RTC_PRD(void){  }
 
 // S12AD0_S12ADI0
-void Excep_S12AD0_S12ADI0(void){  }
+void Excep_S12AD0_S12ADI0(void) {
+
+    // HOGE
+
+
+}
 
 // S12AD0_GBADI
 void Excep_S12AD0_GBADI(void){  }

@@ -308,7 +308,7 @@ void sci_init(void) {
 // ADC
 //============================================================
 // Data:                12bit
-// Alignment:           right aligned in 16bit
+// Data Alignment:      right aligned in 16bit
 // ADC start trigger:   TRG0EN(MTU0.TGRE compare match),
 //                      1ms period
 // Ch count:            12
@@ -357,7 +357,7 @@ void adc_init(void) {
     //------------------------------------------------------------
     // ADANSA: AD Analog channel select A
     //------------------------------------------------------------
-    S12AD.ADANSA.WORD = 0xffffh;    //  Enable all 16ch, except:
+    S12AD.ADANSA.WORD  = 0xffff;    //  Enable all 16ch, except:
     S12AD.ADANSA.BIT.ANSA5  = 0;    //  Disable
     S12AD.ADANSA.BIT.ANSA7  = 0;    //  Disable
     S12AD.ADANSA.BIT.ANSA14 = 0;    //  Disable
@@ -367,44 +367,44 @@ void adc_init(void) {
     //------------------------------------------------------------
     // ADANSB: AD Analog channel select B
     //------------------------------------------------------------
-    S12AD.ADANSB.WORD = 0x0000h;    // Not used in single scan.
+    S12AD.ADANSB.WORD = 0x0000;     // Not used in single scan.
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADADS: AD Add-mode channel select
     //------------------------------------------------------------
-    S12AD.ADADS.WORD = 0x0000h;     // Disable add-mode for all ch.
+    S12AD.ADADS.WORD = 0x0000;      // Disable add-mode for all ch.
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADADC: AD Add count
     //------------------------------------------------------------
-    S12AD.ADADC.BI.ADC = 0;         // No addition.
+    S12AD.ADADC.BIT.ADC = 0;        // No addition.
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADCER: AD Control Extention Register
     //------------------------------------------------------------
-    S12AD.ADCER.ADRFMT  = 0;        // AD Data Register Formati:    right aligned
-	S12AD.ADCER.ACE     = 1;        // Auto Clear Enable:           Enable
-	S12AD.ADCER.DIAGVAL = 2;        // Self diagnose voltage value: (Vref x 1/2) (Not used)
-	S12AD.ADCER.DIAGLD  = 1;        // Self diagnose voltage:       fixed (Not used)
-	S12AD.ADCER.DIAGM   = 0;        // Self diagnose:               Disable
+    S12AD.ADCER.BIT.ADRFMT  = 0;    // AD Data Register Formati:    right aligned
+	S12AD.ADCER.BIT.ACE     = 1;    // Auto Clear Enable:           Enable
+	S12AD.ADCER.BIT.DIAGVAL = 2;    // Self diagnose voltage value: (Vref x 1/2) (Not used)
+	S12AD.ADCER.BIT.DIAGLD  = 1;    // Self diagnose voltage:       fixed (Not used)
+	S12AD.ADCER.BIT.DIAGM   = 0;    // Self diagnose:               Disable
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADSTRGR: AD Start Trigger select Register
     //------------------------------------------------------------
-	S12AD.ADSTRRG.TRSA  = 4;        // TRG0EN (MTU0/TRGE compare match)
-	S12AD.ADSTRRG.TRSB  = 0;        // Group B trigger:             ADTRG0# (Not used)
+	S12AD.ADSTRGR.BIT.TRSA  = 4;    // TRG0EN (MTU0/TRGE compare match)
+	S12AD.ADSTRGR.BIT.TRSB  = 0;    // Group B trigger:             ADTRG0# (Not used)
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADEXICR: AD Extended Input Control Register
     //------------------------------------------------------------
-	S12AD.ADEXICR.OCSAD = 0;        // Addtion mode of internal Vref:   No
-	S12AD.ADEXICR.TSS   = 0;        // (Although RX220 does not have TSS bit.)
-	S12AD.ADEXICR.OCS   = 0;        // AD convert internal Vref:        No  // Must be 0 for single scan mode.
+	S12AD.ADEXICR.BIT.OCSAD = 0;    // Addtion mode of internal Vref:   No
+	S12AD.ADEXICR.BIT.TSS   = 0;    // (Although RX220 does not have TSS bit.)
+	S12AD.ADEXICR.BIT.OCS   = 0;    // AD convert internal Vref:        No  // Must be 0 for single scan mode.
     //------------------------------------------------------------
 
     //------------------------------------------------------------
@@ -444,7 +444,13 @@ void adc_init(void) {
     // ADOCDR:          // AD Internal Reference Data Register (Not used)
     // ADDR0-ADDR15:    // AD Data Register
 
-
+/*
+HOGE
+32.7.12 12 ビットA/D コンバータ入力を使用する場合のポートの設定
+ポート4、ポートE の端子の中で、1 端子でも12 ビットA/D コンバータのアナログ入力端子として使用
+する場合は、ポート0、ポート4 のポート出力は使用しないでください。ポート0 とポート4 の回路の一部
+で、アナログ電源を使用しているためです。
+*/
 
     //////////////////////////////////////////////////////////////////////////////////
     // Set pin function:
@@ -455,18 +461,28 @@ void adc_init(void) {
     //------------------------------------------------------------
     // MPC(Multi Pin Function Controller)
     //------------------------------------------------------------
-        :
     //////////////////////////////////////////////////////////////////////////////////
 
 
 
 }
 
+/*
+HOGE
+32.7.2 A/D 変換停止時の注意事項
+A/D 変換開始条件に非同期トリガ、または同期トリガを選択している場合、A/D 変換を停止させるために
+は、
+    ADCSR.TRGE ビットを“0” に設定し、
+    A/D 変換開始条件をソフトウェアトリガにした後、
+    ADCSR.ADST ビットを“0”（A/D 変換停止）に設定してください。
+*/
+
+
 void adc_trigger_enable(int trig_enable) {
     if (trig_enable==1) {
-	    ADCSR.BIT.TRGE  = 1;    // Enable  trigger for ADC start
+	    S12AD.ADCSR.BIT.TRGE  = 1;  // Enable  trigger for ADC start
     } else {
-	    ADCSR.BIT.TRGE  = 0;    // Disable trigger for ADC start
+	    S12AD.ADCSR.BIT.TRGE  = 0;  // Disable trigger for ADC start
     }
 }
 
@@ -566,11 +582,21 @@ void main(void)
     gvar_init();
     hwsetup();
 
-    //------------------------------------------------------------
+    //============================================================
     // Interrupt Controller setting
+    //============================================================
+    // Interrupt Priority Level
+    //  0:      prohibit interrupt 
+    //  1--15:  larger --> higher priority
     //------------------------------------------------------------
-    IPR(MTU0, TGIA0) = 2;   // Interrupt Priority Level
-    IEN(MTU0, TGIA0) = 1;   // Interrupt Enable
+    IPR(MTU0,   TGIA0)      = 2;
+    IPR(S12AD,  S12ADI0)    = 3;
+    //------------------------------------------------------------
+    // Interrupt enable
+    //------------------------------------------------------------
+    IEN(MTU0,   TGIA0)      = 1;
+    IEN(S12AD,  S12ADI0)    = 0;    //1;
+    //------------------------------------------------------------
 
     adc_trigger_enable(1);
 
