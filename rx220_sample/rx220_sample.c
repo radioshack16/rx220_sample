@@ -594,8 +594,8 @@ void main(void)
     //------------------------------------------------------------
     // Interrupt enable
     //------------------------------------------------------------
-    IEN(MTU0,   TGIA0)      = 1;
-    IEN(S12AD,  S12ADI0)    = 0;    //1;
+    IEN(MTU0,   TGIA0)      = 0;    // Disable MTU0 interrupt
+    IEN(S12AD,  S12ADI0)    = 1;    // Enable S12AD interrupt
     //------------------------------------------------------------
 
     adc_trigger_enable(1);

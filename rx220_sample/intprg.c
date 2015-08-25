@@ -153,7 +153,24 @@ void Excep_RTC_PRD(void){  }
 void Excep_S12AD0_S12ADI0(void) {
 
     // HOGE
+    // TEMP
+    int d;
 
+    g_mtu2_count_prev=g_mtu2_count;
+    g_mtu2_count++;
+
+    g_ms_count = (g_ms_count>=1000) ? 0 : (g_ms_count+1);
+
+    if ((g_ms_count%2)==0) {
+        SCI1.TDR = 'A';
+    }
+
+    //------------------------------------------------------------
+    // Update LEDs
+    //------------------------------------------------------------
+    d = ((g_led1 & 1) <<1) |
+        ((g_led0 & 1)    ) ;
+    PORTH.PODR.BYTE=d;
 
 }
 
