@@ -33,8 +33,7 @@ void abort(void);
 //------------------------------------------------------------
 // Global variables
 //------------------------------------------------------------
-int     g_mtu2_count;
-int     g_mtu2_count_prev;
+int     g_sys_count;
 int     g_ms_count;
 int     g_led0; // 0 or 1
 int     g_led1; // 0 or 1
@@ -566,10 +565,10 @@ void hwsetup(void)
 }
 
 void    gvar_init(void) {
-    g_mtu2_count = 0;
-    g_ms_count   = 0;
-    g_led0       = 0;
-    g_led1       = 0;
+    g_sys_count = 0;
+    g_ms_count  = 0;
+    g_led0      = 0;
+    g_led1      = 0;
 }
 
 void main(void)

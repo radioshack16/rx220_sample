@@ -32,8 +32,7 @@
 
 #pragma section IntPRG
 
-extern int     g_mtu2_count;
-extern int     g_mtu2_count_prev;
+extern int     g_sys_count;
 extern int     g_ms_count;
 extern int     g_led0;      // LED1 on the board, Red.
 extern int     g_led1;      // LED2 on the board, Green.
@@ -149,16 +148,15 @@ void Excep_RTC_ALARM(void){  }
 // RTC_PRD
 void Excep_RTC_PRD(void){  }
 
+//------------------------------------------------------------
 // S12AD0_S12ADI0
+//------------------------------------------------------------
+// Assumed to be called every 1ms.
+//------------------------------------------------------------
 void Excep_S12AD0_S12ADI0(void) {
-
-    // HOGE
-    // TEMP
     int d;
 
-    g_mtu2_count_prev=g_mtu2_count;
-    g_mtu2_count++;
-
+    g_sys_count++;
     g_ms_count = (g_ms_count>=1000) ? 0 : (g_ms_count+1);
 
     if ((g_ms_count%2)==0) {
@@ -171,7 +169,6 @@ void Excep_S12AD0_S12ADI0(void) {
     d = ((g_led1 & 1) <<1) |
         ((g_led0 & 1)    ) ;
     PORTH.PODR.BYTE=d;
-
 }
 
 // S12AD0_GBADI
@@ -183,26 +180,10 @@ void Excep_ELC_ELSR18I(void){  }
 //------------------------------------------------------------
 // MTU20_TGIA0
 //------------------------------------------------------------
-// Assumed to be called every 1ms.
+// Assumed not to be called.
 //------------------------------------------------------------
 void Excep_MTU20_TGIA0(void) {
-    int d;
-
-    g_mtu2_count_prev=g_mtu2_count;
-    g_mtu2_count++;
-
-    g_ms_count = (g_ms_count>=1000) ? 0 : (g_ms_count+1);
-
-    if ((g_ms_count%2)==0) {
-        SCI1.TDR = 'A';
-    }
-
-    //------------------------------------------------------------
-    // Update LEDs
-    //------------------------------------------------------------
-    d = ((g_led1 & 1) <<1) |
-        ((g_led0 & 1)    ) ;
-    PORTH.PODR.BYTE=d;
+    // EMPTY
 }
 
 // MTU20_TGIB0
