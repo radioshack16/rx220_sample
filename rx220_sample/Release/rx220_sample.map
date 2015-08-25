@@ -1,4 +1,4 @@
-Optimizing Linkage Editor (V.10.02.00.000)        21-Aug-2015 08:52:47
+Optimizing Linkage Editor (V.10.02.00.000)        25-Aug-2015 23:06:05
 
 *** Options ***
 
@@ -36,11 +36,11 @@ B_2
 R_2
                                   00001000  00001000         0   2
 B
-                                  00001000  00001413       414   4
+                                  00001000  0000140f       410   4
 R
-                                  00001414  00001417         4   4
+                                  00001410  00001413         4   4
 SI
-                                  00001418  00001717       300   4
+                                  00001414  00001713       300   4
 PResetPRG
                                   ffff8000  ffff8022        23   1
 C_1
@@ -64,13 +64,13 @@ D
 P
                                   ffff8558  ffff89ad       456   1
 PIntPRG
-                                  ffff89ae  ffff8afd       150   1
+                                  ffff89ae  ffff8af5       148   1
 W_1
-                                  ffff8afe  ffff8afe         0   1
+                                  ffff8af6  ffff8af6         0   1
 W_2
-                                  ffff8afe  ffff8afe         0   2
+                                  ffff8af6  ffff8af6         0   2
 W
-                                  ffff8b00  ffff8b00         0   4
+                                  ffff8af8  ffff8af8         0   4
 $ADDR_C_FFFFFF80
                                   ffffff80  ffffff83         4   1
 FIXEDVECT
