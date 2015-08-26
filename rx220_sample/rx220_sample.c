@@ -341,16 +341,16 @@ void adc_init(void) {
     //------------------------------------------------------------
     // AD Control (Scan) Register
     //------------------------------------------------------------
-   	S12AD.ADCSR.BIT.ADST    = 0;    // AD Start bit: 0: ADC stop, 1: ADC start
+    S12AD.ADCSR.BIT.ADST    = 0;    // AD Start bit: 0: ADC stop, 1: ADC start
                                     // Stop while register setting.
-	S12AD.ADCSR.BIT.DBLANS  = 0;    // Don't care in single scan.
-	S12AD.ADCSR.BIT.GBADIE  = 0;    // Disable interrupt on the end of group B scan
-	S12AD.ADCSR.BIT.DBLE    = 0;    // Not double trigger mode
-	S12AD.ADCSR.BIT.EXTRG   = 0;    // Select synchronous trigger by MTU, ELC for ADC start
-	S12AD.ADCSR.BIT.TRGE    = 0;    // Disable trigger for ADC start. Enable later.
-	S12AD.ADCSR.BIT.ADIE    = 1;    // Enable Interrupt S12ADI0 on the end of scan
-	S12AD.ADCSR.BIT.ADCS    = 0;    // Scan mode: 0:*single scan, 1: group scan, 2: continuous scan
-   	// S12AD.ADCSR.BIT.ADST         // AD Start bit: auto set/reset by the ADC circuit.
+    S12AD.ADCSR.BIT.DBLANS  = 0;    // Don't care in single scan.
+    S12AD.ADCSR.BIT.GBADIE  = 0;    // Disable interrupt on the end of group B scan
+    S12AD.ADCSR.BIT.DBLE    = 0;    // Not double trigger mode
+    S12AD.ADCSR.BIT.EXTRG   = 0;    // Select synchronous trigger by MTU, ELC for ADC start
+    S12AD.ADCSR.BIT.TRGE    = 0;    // Disable trigger for ADC start. Enable later.
+    S12AD.ADCSR.BIT.ADIE    = 1;    // Enable Interrupt S12ADI0 on the end of scan
+    S12AD.ADCSR.BIT.ADCS    = 0;    // Scan mode: 0:*single scan, 1: group scan, 2: continuous scan
+    // S12AD.ADCSR.BIT.ADST         // AD Start bit: auto set/reset by the ADC circuit.
     //------------------------------------------------------------
 
     //------------------------------------------------------------
@@ -385,25 +385,25 @@ void adc_init(void) {
     // ADCER: AD Control Extention Register
     //------------------------------------------------------------
     S12AD.ADCER.BIT.ADRFMT  = 0;    // AD Data Register Formati:    right aligned
-	S12AD.ADCER.BIT.ACE     = 1;    // Auto Clear Enable:           Enable
-	S12AD.ADCER.BIT.DIAGVAL = 2;    // Self diagnose voltage value: (Vref x 1/2) (Not used)
-	S12AD.ADCER.BIT.DIAGLD  = 1;    // Self diagnose voltage:       fixed (Not used)
-	S12AD.ADCER.BIT.DIAGM   = 0;    // Self diagnose:               Disable
+    S12AD.ADCER.BIT.ACE     = 1;    // Auto Clear Enable:           Enable
+    S12AD.ADCER.BIT.DIAGVAL = 2;    // Self diagnose voltage value: (Vref x 1/2) (Not used)
+    S12AD.ADCER.BIT.DIAGLD  = 1;    // Self diagnose voltage:       fixed (Not used)
+    S12AD.ADCER.BIT.DIAGM   = 0;    // Self diagnose:               Disable
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADSTRGR: AD Start Trigger select Register
     //------------------------------------------------------------
-	S12AD.ADSTRGR.BIT.TRSA  = 4;    // TRG0EN (MTU0/TRGE compare match)
-	S12AD.ADSTRGR.BIT.TRSB  = 0;    // Group B trigger:             ADTRG0# (Not used)
+    S12AD.ADSTRGR.BIT.TRSA  = 4;    // TRG0EN (MTU0/TRGE compare match)
+    S12AD.ADSTRGR.BIT.TRSB  = 0;    // Group B trigger:             ADTRG0# (Not used)
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADEXICR: AD Extended Input Control Register
     //------------------------------------------------------------
-	S12AD.ADEXICR.BIT.OCSAD = 0;    // Addtion mode of internal Vref:   No
-	S12AD.ADEXICR.BIT.TSS   = 0;    // (Although RX220 does not have TSS bit.)
-	S12AD.ADEXICR.BIT.OCS   = 0;    // AD convert internal Vref:        No  // Must be 0 for single scan mode.
+    S12AD.ADEXICR.BIT.OCSAD = 0;    // Addtion mode of internal Vref:   No
+    S12AD.ADEXICR.BIT.TSS   = 0;    // (Although RX220 does not have TSS bit.)
+    S12AD.ADEXICR.BIT.OCS   = 0;    // AD convert internal Vref:        No  // Must be 0 for single scan mode.
     //------------------------------------------------------------
 
     //------------------------------------------------------------
@@ -416,25 +416,25 @@ void adc_init(void) {
     // n=255, T=12.75us     // Tentative
     //------------------------------------------------------------
     n=255;
-	S12AD.ADSSTR0   = n;    // AN000
+    S12AD.ADSSTR0   = n;    // AN000
     //
-	S12AD.ADSSTRL   = n;    // AN008--AN015
-	S12AD.ADSSTRT   = n;    // (Although RX220 does not have Temperature sensor.)
-	S12AD.ADSSTRO   = n;    // internal vref
+    S12AD.ADSSTRL   = n;    // AN008--AN015
+    S12AD.ADSSTRT   = n;    // (Although RX220 does not have Temperature sensor.)
+    S12AD.ADSSTRO   = n;    // internal vref
     //
-	S12AD.ADSSTR1   = n;    // AN001
-	S12AD.ADSSTR2   = n;    // AN002
-	S12AD.ADSSTR3   = n;    // AN003
-	S12AD.ADSSTR4   = n;    // AN004
-	S12AD.ADSSTR5   = n;    // AN005
-	S12AD.ADSSTR6   = n;    // AN006
-	S12AD.ADSSTR7   = n;    // AN007
+    S12AD.ADSSTR1   = n;    // AN001
+    S12AD.ADSSTR2   = n;    // AN002
+    S12AD.ADSSTR3   = n;    // AN003
+    S12AD.ADSSTR4   = n;    // AN004
+    S12AD.ADSSTR5   = n;    // AN005
+    S12AD.ADSSTR6   = n;    // AN006
+    S12AD.ADSSTR7   = n;    // AN007
     //------------------------------------------------------------
 
     //------------------------------------------------------------
     // ADDISCR: AD Disconnect Detect Control Register
     //------------------------------------------------------------
-	S12AD.ADDISCR.BIT.ADNDIS = 0;   // Assist Disconnect Detect: No
+    S12AD.ADDISCR.BIT.ADNDIS = 0;   // Assist Disconnect Detect: No
     //------------------------------------------------------------
 
 
@@ -448,7 +448,7 @@ void adc_init(void) {
     //////////////////////////////////////////////////////////////////////////////////
     // HOGE
     // - ADC related port
-    // - port 0, 4, E should not be used, since analog power supply voltage is used by those ports. 
+    // - port 0, 4, E should not be used, since analog power supply voltage is used by those ports.
     //------------------------------------------------------------
     // MPC(Multi Pin Function Controller)
     //------------------------------------------------------------
@@ -459,9 +459,9 @@ void adc_init(void) {
 
 void adc_trigger_enable(int trig_enable) {
     if (trig_enable==1) {
-	    S12AD.ADCSR.BIT.TRGE  = 1;  // Enable  trigger for ADC start
+        S12AD.ADCSR.BIT.TRGE  = 1;  // Enable  trigger for ADC start
     } else {
-	    S12AD.ADCSR.BIT.TRGE  = 0;  // Disable trigger for ADC start
+        S12AD.ADCSR.BIT.TRGE  = 0;  // Disable trigger for ADC start
     }
 }
 
@@ -517,9 +517,9 @@ void hwsetup(void)
     //======================================================================
     // Port
     //======================================================================
-	PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
+    PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
                                 //      1 0 1 1     // 0: input, 1: output
-	PORTH.PODR.BYTE     =0x00;
+    PORTH.PODR.BYTE     =0x00;
     //----------------------------------------------------------------------
 
     //======================================================================
@@ -565,7 +565,7 @@ void main(void)
     // Interrupt Controller setting
     //============================================================
     // Interrupt Priority Level
-    //  0:      prohibit interrupt 
+    //  0:      prohibit interrupt
     //  1--15:  larger --> higher priority
     //------------------------------------------------------------
     IPR(MTU0,   TGIA0)      = 2;
@@ -582,7 +582,7 @@ void main(void)
     //------------------------------------------------------------
     // Program main
     //------------------------------------------------------------
-	while(1) {
+    while(1) {
         sw_slide = PORTH.PIDR.BIT.B2;
         switch(sw_slide) {
             case 0:
@@ -593,7 +593,7 @@ void main(void)
                 break;
         }
         g_led1 = (g_ms_count<500) ? 1 : 0;
-	}
+    }
 }
 
 #ifdef __cplusplus
