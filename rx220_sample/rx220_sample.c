@@ -428,15 +428,24 @@ void adc_trigger_enable(int trig_enable) {
 }
 
 //------------------------------------------------------------
-// Port Mode Register: reset:   use all pin as general ports
+// Port Mode Register: reset all ports' mode to be general ports,
+// temporarily.
 //------------------------------------------------------------
 void    PMR_reset(void)
 {
-    PORT2.PMR.BIT.B6    = 0;    // General port as first.
-    PORT3.PMR.BIT.B0    = 0;    // General port as first.
-
-    // HOGE: other port<n> reset to come. 
-
+    PORT0.PMR.BYTE      = 0;
+    PORT1.PMR.BYTE      = 0;
+    PORT2.PMR.BYTE      = 0;
+    PORT3.PMR.BYTE      = 0;
+    PORT4.PMR.BYTE      = 0;
+    PORT5.PMR.BYTE      = 0;
+    PORTA.PMR.BYTE      = 0;
+    PORTB.PMR.BYTE      = 0;
+    PORTC.PMR.BYTE      = 0;
+    PORTD.PMR.BYTE      = 0;
+    PORTE.PMR.BYTE      = 0;
+    PORTH.PMR.BYTE      = 0;
+    PORTJ.PMR.BYTE      = 0;
 }
 
 //------------------------------------------------------------
@@ -478,14 +487,15 @@ void MPC_init(void)
 }
 
 //------------------------------------------------------------
-// Port Mode Register: set:     use pins for specified modules
+// Port Mode Register: set ports' mode to be peripheral
 //------------------------------------------------------------
 void    PMR_set(void)
 {
     PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
     PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
 
-    // HOGE: Others' setting to come.
+    // HOGE: AD input pin to be set.
+    // and others.
 }
 
 
@@ -538,8 +548,8 @@ void hwsetup(void)
     SYSTEM.HOCOCR.BIT.HCSTP     = 1;    // HOCO         (32--50MHz; +/-1%)
     //----------------------------------------------------------------------
 
-    ////////////////////////////////////////////////////////////////////////
-    PMR_reset();    // Port Mode Register: reset to use all pins as ports, temporarily.
+  ////////////////////////////////////////////////////////////////////////
+  PMR_reset();  // Port Mode Register: reset to use all pins as ports, temporarily.
 
     //======================================================================
     // Port
@@ -565,9 +575,13 @@ void hwsetup(void)
     //======================================================================
     adc_init();
 
-    MPC_init();     // Multi Pin Funciton Controller
-    PMR_set();      // Port Mode Register: set to use specified perpherals' interface.
-    ////////////////////////////////////////////////////////////////////////
+    //======================================================================
+    // Multi Pin Funciton Controller
+    //======================================================================
+    MPC_init(); // Multi Pin Funciton Controller
+ 
+  PMR_set();    // Port Mode Register: set to use specified perpherals' interface.
+  ////////////////////////////////////////////////////////////////////////
 
     //----------------------------------------------------------------------
     // Protect Control Register
