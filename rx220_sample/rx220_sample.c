@@ -211,44 +211,6 @@ void sci_init(void) {
     SCI1.SCR.BIT.TIE    = 0;    // Transmit Interrupt Enable:           Disable
     //------------------------------------------------------------
 
-    //////////////////////////////////////////////////////////////////////////////////
-    // Set pin function: TXD1, RXD1
-    //////////////////////////////////////////////////////////////////////////////////
-    //------------------------------------------------------------
-    // Port Mode Register: 1st
-    //------------------------------------------------------------
-    PORT2.PMR.BIT.B6    = 0;    // General port as first.
-    PORT3.PMR.BIT.B0    = 0;    // General port as first.
-    //------------------------------------------------------------
-
-    //------------------------------------------------------------
-    // MPC(Multi Pin Function Controller)
-    //------------------------------------------------------------
-    //--------------------
-    MPC.PWPR.BIT.B0WI   = 0;    // Enable writing PFSWE bit
-    MPC.PWPR.BIT.PFSWE  = 1;    // Enable writing PFS register
-    //--------------------
-
-    //--------------------
-    MPC.P26PFS.BIT.PSEL = 0xA;  // Pin select: TXD1
-    //--------------------
-    MPC.P30PFS.BIT.PSEL = 0xA;  // Pin select: RXD1
-    MPC.P30PFS.BIT.ISEL = 0;    // Interrupt select: Don't use as IRQ0 input.
-    //--------------------
-
-    //--------------------
-    MPC.PWPR.BIT.PFSWE  = 0;    // Prohibit writing PFS register
-    MPC.PWPR.BIT.B0WI   = 1;    // Prohibit writing PFSWE bit
-    //--------------------
-
-    //------------------------------------------------------------
-    // Port Mode Register: 2nd
-    //------------------------------------------------------------
-    PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
-    PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
-    //------------------------------------------------------------
-    //////////////////////////////////////////////////////////////////////////////////
-
     //------------------------------------------------------------
     // SCI1: I2C mode register 1
     //------------------------------------------------------------
@@ -465,6 +427,68 @@ void adc_trigger_enable(int trig_enable) {
     }
 }
 
+//------------------------------------------------------------
+// Port Mode Register: reset:   use all pin as general ports
+//------------------------------------------------------------
+void    PMR_reset(void)
+{
+    PORT2.PMR.BIT.B6    = 0;    // General port as first.
+    PORT3.PMR.BIT.B0    = 0;    // General port as first.
+
+    // HOGE: other port<n> reset to come. 
+
+}
+
+//------------------------------------------------------------
+// MPC(Multi Pin Function Controller)
+//------------------------------------------------------------
+//
+//  TXD1, RXD1
+//  ADC001..015 (12ch in total)
+//
+void MPC_init(void)
+{
+    //--------------------
+    MPC.PWPR.BIT.B0WI   = 0;    // Enable writing PFSWE bit
+    MPC.PWPR.BIT.PFSWE  = 1;    // Enable writing PFS register
+    //--------------------
+
+    //============================================================
+    // Set pin: TXD1, RXD1
+    //============================================================
+    MPC.P26PFS.BIT.PSEL = 0xA;  // Pin select: TXD1
+    //--------------------
+    MPC.P30PFS.BIT.PSEL = 0xA;  // Pin select: RXD1
+    MPC.P30PFS.BIT.ISEL = 0;    // Interrupt select: Don't use as IRQ0 input.
+    //--------------------
+
+    //============================================================
+    // Set pin: ADC
+    //============================================================
+    // HOGE
+
+    //  :
+
+
+
+    //--------------------
+    MPC.PWPR.BIT.PFSWE  = 0;    // Prohibit writing PFS register
+    MPC.PWPR.BIT.B0WI   = 1;    // Prohibit writing PFSWE bit
+    //--------------------
+}
+
+//------------------------------------------------------------
+// Port Mode Register: set:     use pins for specified modules
+//------------------------------------------------------------
+void    PMR_set(void)
+{
+    PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
+    PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
+
+    // HOGE: Others' setting to come.
+}
+
+
 //============================================================
 // Hardware setup
 //============================================================
@@ -514,6 +538,9 @@ void hwsetup(void)
     SYSTEM.HOCOCR.BIT.HCSTP     = 1;    // HOCO         (32--50MHz; +/-1%)
     //----------------------------------------------------------------------
 
+    ////////////////////////////////////////////////////////////////////////
+    PMR_reset();    // Port Mode Register: reset to use all pins as ports, temporarily.
+
     //======================================================================
     // Port
     //======================================================================
@@ -537,6 +564,10 @@ void hwsetup(void)
     // ADC
     //======================================================================
     adc_init();
+
+    MPC_init();     // Multi Pin Funciton Controller
+    PMR_set();      // Port Mode Register: set to use specified perpherals' interface.
+    ////////////////////////////////////////////////////////////////////////
 
     //----------------------------------------------------------------------
     // Protect Control Register
