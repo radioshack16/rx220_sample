@@ -490,7 +490,7 @@ void MPC_init(void)
     MPC.P42PFS.BIT.ASEL = 1;    //  AN002
     MPC.P43PFS.BIT.ASEL = 1;    //  AN003
     MPC.P44PFS.BIT.ASEL = 1;    //  AN004
-    // MPC.P45PFS.BIT.ASEL = 1;    //  AN004 NA
+    // MPC.P45PFS.BIT.ASEL = 1;    //  AN005 NA
     MPC.P46PFS.BIT.ASEL = 1;    //  AN006
     // MPC.P47PFS.BIT.ASEL = 1;    //  AN007 NA
     //---
@@ -521,11 +521,13 @@ void MPC_init(void)
 //------------------------------------------------------------
 void    PORT_PMR_set(void)
 {
+    // SCI1
     PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
     PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
 
-    // HOGE: AD input pin to be set.
-    // and others.
+    // ADC
+    PORT4.PMR.BYTE      = 0x5F; //  0101_1111: AN ch:[x6x4_3210]
+    PORTE.PMR.BYTE      = 0x3F; //  0011_1111: AN ch:[xxDC_BA98]
 }
 
 
