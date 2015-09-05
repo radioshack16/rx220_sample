@@ -46,8 +46,17 @@ void PORT_init(void)
     PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
                                 //      O I O O     // Output/Input -> 1/0
     PORTH.PODR.BYTE     =0x00;
-
-    // Port directions are set also at ADC_init().
+}
+//------------------------------------------------------------
+// Set port direction as input not to affect ADC performance
+//------------------------------------------------------------
+//  port 4 and E:    The pins are multiplexed with AD input.
+//  port 0, 4:       These use analog power supply, and
+//                   must not be used as output ports.
+void PORT_set_input_for_ADC(void)
+{
+    PORT4.PDR.BYTE  = 0x00;
+    PORTE.PDR.BYTE  = 0x00;
 }
 
 //============================================================
@@ -410,21 +419,13 @@ void ADC_init(void) {
     S12AD.ADDISCR.BIT.ADNDIS = 0;   // Assist Disconnect Detect: No
     //------------------------------------------------------------
 
-
-    // HOGE
-    // ADRD:            // AD Self Diagnose Data register   (Not used, but can be used)
-    // ADOCDR:          // AD Internal Reference Data Register (Not used)
-    // ADDR0-ADDR15:    // AD Data Register
-
-
-    //////////////////////////////////////////////////////////////////////////////////
-    // Set related ports as input for ADC performance:
-    //  port 4 and E:    since pins are multiplexed with ADnnn
-    //  port 0, 4:       since uses analog power supply
+    //------------------------------------------------------------
+    // Comment on registers:
+    // ADRD:            AD Self Diagnose Data register      (Not used, but can be used)
+    // ADOCDR:          AD Internal Reference Data Register (Not used)
     //---
-
-
-
+    // ADDR0-ADDR15:    AD Data Register:   TO BE READ.
+    //---
 }
 
 void ADC_trigger_enable(int trig_enable) {
@@ -584,6 +585,7 @@ void hwsetup(void)
     PORT_PMR_reset();   // Port Mode Register: reset to use all pins as ports, temporarily.
 
         PORT_init();
+        PORT_set_input_for_ADC();
 
         MTU2a_init();
         MTU2a_ch0_restart();
