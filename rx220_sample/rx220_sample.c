@@ -46,6 +46,8 @@ void PORT_init(void)
     PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
                                 //      O I O O     // Output/Input -> 1/0
     PORTH.PODR.BYTE     =0x00;
+
+    // Port directions are set also at ADC_init().
 }
 
 //============================================================
@@ -414,16 +416,13 @@ void ADC_init(void) {
     // ADOCDR:          // AD Internal Reference Data Register (Not used)
     // ADDR0-ADDR15:    // AD Data Register
 
+
     //////////////////////////////////////////////////////////////////////////////////
-    // Set pin function:
-    //////////////////////////////////////////////////////////////////////////////////
-    // HOGE
-    // - ADC related port
-    // - port 0, 4, E should not be used, since analog power supply voltage is used by those ports.
-    //------------------------------------------------------------
-    // MPC(Multi Pin Function Controller)
-    //------------------------------------------------------------
-    //////////////////////////////////////////////////////////////////////////////////
+    // Set related ports as input for ADC performance:
+    //  port 4 and E:    since pins are multiplexed with ADnnn
+    //  port 0, 4:       since uses analog power supply
+    //---
+
 
 
 }
@@ -466,33 +465,55 @@ void    PORT_PMR_reset(void)
 //
 void MPC_init(void)
 {
-    //--------------------
+    //------------------------------------------------------------
+    // Write Protect Registser
+    //------------------------------------------------------------
     MPC.PWPR.BIT.B0WI   = 0;    // Enable writing PFSWE bit
     MPC.PWPR.BIT.PFSWE  = 1;    // Enable writing PFS register
-    //--------------------
+    //------------------------------------------------------------
 
     //============================================================
-    // Set pin: TXD1, RXD1
+    // Set pin: SCI/TXD1, RXD1
     //============================================================
     MPC.P26PFS.BIT.PSEL = 0xA;  // Pin select: TXD1
     //--------------------
     MPC.P30PFS.BIT.PSEL = 0xA;  // Pin select: RXD1
-    MPC.P30PFS.BIT.ISEL = 0;    // Interrupt select: Don't use as IRQ0 input.
-    //--------------------
+    MPC.P30PFS.BIT.ISEL = 0;    // Interrupt select: not used as IRQ0 input.
+    //------------------------------------------------------------
 
     //============================================================
-    // Set pin: ADC
+    // Set pin: ADC/AN000..AN013
     //============================================================
-    // HOGE
+    // Port 4   // ASEL: Analog select  1/0: analog/not
+    MPC.P40PFS.BIT.ASEL = 1;    //  AN000
+    MPC.P41PFS.BIT.ASEL = 1;    //  AN001
+    MPC.P42PFS.BIT.ASEL = 1;    //  AN002
+    MPC.P43PFS.BIT.ASEL = 1;    //  AN003
+    MPC.P44PFS.BIT.ASEL = 1;    //  AN004
+    // MPC.P45PFS.BIT.ASEL = 1;    //  AN004 NA
+    MPC.P46PFS.BIT.ASEL = 1;    //  AN006
+    // MPC.P47PFS.BIT.ASEL = 1;    //  AN007 NA
+    //---
+    // Port E   // ASEL: Analog select  1/0: analog/not
+    MPC.PE0PFS.BIT.ASEL = 1;    //  AN008
+    MPC.PE1PFS.BIT.ASEL = 1;    //  AN009
+    MPC.PE2PFS.BIT.ASEL = 1;    //  AN010
+    MPC.PE3PFS.BIT.ASEL = 1;    //  AN011
+    MPC.PE4PFS.BIT.ASEL = 1;    //  AN012
+    MPC.PE5PFS.BIT.ASEL = 1;    //  AN013
+    // MPC.PE6PFS.BIT.ASEL = 1;    //  AN014 NA
+    // MPC.PE7PFS.BIT.ASEL = 1;    //  AN015 NA
+    //---
+    // Port 1-6
+    MPC.P16PFS.BIT.PSEL = 0;    // Pin select: Hi-z,  not used as ADTRG0#
+    //------------------------------------------------------------
 
-    //  :
-
-
-
-    //--------------------
+    //------------------------------------------------------------
+    // Write Protect Registser
+    //------------------------------------------------------------
     MPC.PWPR.BIT.PFSWE  = 0;    // Prohibit writing PFS register
     MPC.PWPR.BIT.B0WI   = 1;    // Prohibit writing PFSWE bit
-    //--------------------
+    //------------------------------------------------------------
 }
 
 //------------------------------------------------------------
