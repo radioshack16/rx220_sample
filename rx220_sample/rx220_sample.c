@@ -38,6 +38,15 @@ int     g_ms_count;
 int     g_led0; // 0 or 1
 int     g_led1; // 0 or 1
 
+//======================================================================
+// Port
+//======================================================================
+void PORT_init(void)
+{
+    PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
+                                //      O I O O     // Output/Input -> 1/0
+    PORTH.PODR.BYTE     =0x00;
+}
 
 //============================================================
 // MTU2a
@@ -191,7 +200,7 @@ void MTU2a_init(void)
 // LQFP64:  pin16:  TXD1 (Port26)
 //          pin14:  RXD1 (Port30)
 //------------------------------------------------------------
-void sci_init(void) {
+void SCI_init(void) {
     //------------------------------------------------------------
     // Release module stop
     //------------------------------------------------------------
@@ -295,7 +304,7 @@ void sci_init(void) {
 //  AN14:   NA
 //  AN15:   NA
 //------------------------------------------------------------
-void adc_init(void) {
+void ADC_init(void) {
     int n;
 
     MSTP_S12AD = 0;     // Release module stop
@@ -419,7 +428,7 @@ void adc_init(void) {
 
 }
 
-void adc_trigger_enable(int trig_enable) {
+void ADC_trigger_enable(int trig_enable) {
     if (trig_enable==1) {
         S12AD.ADCSR.BIT.TRGE  = 1;  // Enable  trigger for ADC start
     } else {
@@ -431,7 +440,7 @@ void adc_trigger_enable(int trig_enable) {
 // Port Mode Register: reset all ports' mode to be general ports,
 // temporarily.
 //------------------------------------------------------------
-void    PMR_reset(void)
+void    PORT_PMR_reset(void)
 {
     PORT0.PMR.BYTE      = 0;
     PORT1.PMR.BYTE      = 0;
@@ -489,7 +498,7 @@ void MPC_init(void)
 //------------------------------------------------------------
 // Port Mode Register: set ports' mode to be peripheral
 //------------------------------------------------------------
-void    PMR_set(void)
+void    PORT_PMR_set(void)
 {
     PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
     PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
@@ -548,40 +557,21 @@ void hwsetup(void)
     SYSTEM.HOCOCR.BIT.HCSTP     = 1;    // HOCO         (32--50MHz; +/-1%)
     //----------------------------------------------------------------------
 
-  ////////////////////////////////////////////////////////////////////////
-  PMR_reset();  // Port Mode Register: reset to use all pins as ports, temporarily.
+    ////////////////////////////////////////////////////////////////////////
+    PORT_PMR_reset();   // Port Mode Register: reset to use all pins as ports, temporarily.
 
-    //======================================================================
-    // Port
-    //======================================================================
-    PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
-                                //      1 0 1 1     // 0: input, 1: output
-    PORTH.PODR.BYTE     =0x00;
-    //----------------------------------------------------------------------
+        PORT_init();
 
-    //======================================================================
-    // MTU2a
-    //======================================================================
-    MTU2a_init();
-    MTU2a_ch0_restart();
+        MTU2a_init();
+        MTU2a_ch0_restart();
 
-    //======================================================================
-    // SCI
-    //======================================================================
-    sci_init();
+        SCI_init();
 
-    //======================================================================
-    // ADC
-    //======================================================================
-    adc_init();
+        ADC_init();
 
-    //======================================================================
-    // Multi Pin Funciton Controller
-    //======================================================================
-    MPC_init(); // Multi Pin Funciton Controller
- 
-  PMR_set();    // Port Mode Register: set to use specified perpherals' interface.
-  ////////////////////////////////////////////////////////////////////////
+        MPC_init(); // Multi Pin Funciton Controller
+    PORT_PMR_set(); // Port Mode Register: set to use specified perpherals' interface.
+    ////////////////////////////////////////////////////////////////////////
 
     //----------------------------------------------------------------------
     // Protect Control Register
@@ -622,7 +612,7 @@ void main(void)
     IEN(S12AD,  S12ADI0)    = 1;    // Enable S12AD interrupt
     //------------------------------------------------------------
 
-    adc_trigger_enable(1);
+    ADC_trigger_enable(1);
 
     //------------------------------------------------------------
     // Program main
