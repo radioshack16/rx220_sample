@@ -33,12 +33,31 @@ void abort(void);
 //------------------------------------------------------------
 // Global variables
 //------------------------------------------------------------
-int     g_mtu2_count;
-int     g_mtu2_count_prev;
+int     g_sys_count;
 int     g_ms_count;
 int     g_led0; // 0 or 1
 int     g_led1; // 0 or 1
 
+//======================================================================
+// Port
+//======================================================================
+void PORT_init(void)
+{
+    PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
+                                //      O I O O     // Output/Input -> 1/0
+    PORTH.PODR.BYTE     =0x00;
+}
+//------------------------------------------------------------
+// Set port direction as input not to affect ADC performance
+//------------------------------------------------------------
+//  port 4 and E:    The pins are multiplexed with AD input.
+//  port 0, 4:       These use analog power supply, and
+//                   must not be used as output ports.
+void PORT_set_input_for_ADC(void)
+{
+    PORT4.PDR.BYTE  = 0x00;
+    PORTE.PDR.BYTE  = 0x00;
+}
 
 //============================================================
 // MTU2a
@@ -192,7 +211,7 @@ void MTU2a_init(void)
 // LQFP64:  pin16:  TXD1 (Port26)
 //          pin14:  RXD1 (Port30)
 //------------------------------------------------------------
-void sci_init(void) {
+void SCI_init(void) {
     //------------------------------------------------------------
     // Release module stop
     //------------------------------------------------------------
@@ -211,48 +230,6 @@ void sci_init(void) {
     SCI1.SCR.BIT.RIE    = 0;    // Receive Interrupt Enable:            Disable
     SCI1.SCR.BIT.TIE    = 0;    // Transmit Interrupt Enable:           Disable
     //------------------------------------------------------------
-
-    //////////////////////////////////////////////////////////////////////////////////
-    // Set pin function: TXD1, RXD1
-    //////////////////////////////////////////////////////////////////////////////////
-    //------------------------------------------------------------
-    // Port Mode Register: 1st
-    //------------------------------------------------------------
-    PORT2.PMR.BIT.B6    = 0;    // General port as first.
-    PORT3.PMR.BIT.B0    = 0;    // General port as first.
-    //------------------------------------------------------------
-
-    //------------------------------------------------------------
-    // MPC(Multi Pin Function Controller)
-    //------------------------------------------------------------
-    //--------------------
-    MPC.PWPR.BIT.B0WI   = 0;    // Enable writing PFSWE bit
-    MPC.PWPR.BIT.PFSWE  = 1;    // Enable writing PFS register
-    //--------------------
-
-    //--------------------
-    MPC.P26PFS.BIT.PSEL = 0xA;  // Pin select: TXD1
-    //--------------------
-    MPC.P30PFS.BIT.PSEL = 0xA;  // Pin select: RXD1
-    MPC.P30PFS.BIT.ISEL = 0;    // Interrupt select: Don't use as IRQ0 input.
-    //--------------------
-
-    //--------------------
-    MPC.PWPR.BIT.PFSWE  = 0;    // Prohibit writing PFS register
-    MPC.PWPR.BIT.B0WI   = 1;    // Prohibit writing PFSWE bit
-    //--------------------
-
-// HOGE
-// - ADC related port 
-// - port 4, E to be quiet
-
-    //------------------------------------------------------------
-    // Port Mode Register: 2nd
-    //------------------------------------------------------------
-    PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
-    PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
-    //------------------------------------------------------------
-    //////////////////////////////////////////////////////////////////////////////////
 
     //------------------------------------------------------------
     // SCI1: I2C mode register 1
@@ -298,7 +275,7 @@ void sci_init(void) {
     //------------------------------------------------------------
     // SCI1: Bit Rate Register
     //------------------------------------------------------------
-    // 9600bps, PCLK=20MHz, n=0, 
+    // 9600bps, PCLK=20MHz, n=0,
     SCI1.BRR = 64;  // =65.1-1
     //------------------------------------------------------------
 
@@ -311,9 +288,250 @@ void sci_init(void) {
 //============================================================
 // ADC
 //============================================================
-// SET: ADC start trigger by MTU0.TGRE
+// Data:                12bit
+// Ch count:            12
+//                      4 of 16ch are not assigned for 64-pin chip.
+//---
+// AD Data Register:    ADDR0-ADDR15
+//---
+// Data Alignment:      right aligned in 16bit
+// ADC start trigger:   TRG0EN(MTU0.TGRE compare match),
+//                      1ms period
+// Mode:                single scan
+// Interrupt:           generate interrupt request S12ADI0
+//                      on the end of scan
+//---
+// registers not used:
+//  ADRD:   AD Self Diagnose Data register
+//  ADOCDR: AD Internal Reference Data Register
+//---
+// LQFP64:
+//  AN00:   pin60:  (PortXX)
+//  AN01:   pin58:  (PortXX)
+//  AN02:   pin57:  (PortXX)
+//  AN03:   pin56:  (PortXX)
+//  AN04:   pin55:  (PortXX)
+//  AN05:   NA
+//  AN06:   pin53:  (PortXX)
+//  AN07:   NA
+//  AN08:   pin51:  (PortXX)
+//  AN09:   pin50:  (PortXX)
+//  AN10:   pin49:  (PortXX)
+//  AN11:   pin48:  (PortXX)
+//  AN12:   pin47:  (PortXX)
+//  AN13:   pin46:  (PortXX)
+//  AN14:   NA
+//  AN15:   NA
+//------------------------------------------------------------
+void ADC_init(void) {
+    int n;
+
+    MSTP_S12AD = 0;     // Release module stop
+
+    //------------------------------------------------------------
+    // AD Control (Scan) Register
+    //------------------------------------------------------------
+    S12AD.ADCSR.BIT.ADST    = 0;    // AD Start bit: 0: ADC stop, 1: ADC start
+                                    // Stop while register setting.
+    S12AD.ADCSR.BIT.DBLANS  = 0;    // Don't care in single scan.
+    S12AD.ADCSR.BIT.GBADIE  = 0;    // Disable interrupt on the end of group B scan
+    S12AD.ADCSR.BIT.DBLE    = 0;    // Not double trigger mode
+    S12AD.ADCSR.BIT.EXTRG   = 0;    // Select synchronous trigger by MTU, ELC for ADC start
+    S12AD.ADCSR.BIT.TRGE    = 0;    // Disable trigger for ADC start. Enable later.
+    S12AD.ADCSR.BIT.ADIE    = 1;    // Enable Interrupt S12ADI0 on the end of scan
+    S12AD.ADCSR.BIT.ADCS    = 0;    // Scan mode: 0:*single scan, 1: group scan, 2: continuous scan
+    // S12AD.ADCSR.BIT.ADST         // AD Start bit: auto set/reset by the ADC circuit.
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADANSA: AD Analog channel select A
+    //------------------------------------------------------------
+    S12AD.ADANSA.WORD  = 0xffff;    //  Enable all 16ch, except:
+    S12AD.ADANSA.BIT.ANSA5  = 0;    //  Disable
+    S12AD.ADANSA.BIT.ANSA7  = 0;    //  Disable
+    S12AD.ADANSA.BIT.ANSA14 = 0;    //  Disable
+    S12AD.ADANSA.BIT.ANSA15 = 0;    //  Disable
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADANSB: AD Analog channel select B
+    //------------------------------------------------------------
+    S12AD.ADANSB.WORD = 0x0000;     // Not used in single scan.
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADADS: AD Add-mode channel select
+    //------------------------------------------------------------
+    S12AD.ADADS.WORD = 0x0000;      // Disable add-mode for all ch.
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADADC: AD Add count
+    //------------------------------------------------------------
+    S12AD.ADADC.BIT.ADC = 0;        // No addition.
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADCER: AD Control Extention Register
+    //------------------------------------------------------------
+    S12AD.ADCER.BIT.ADRFMT  = 0;    // AD Data Register Formati:    right aligned
+    S12AD.ADCER.BIT.ACE     = 1;    // Auto Clear Enable:           Enable
+    S12AD.ADCER.BIT.DIAGVAL = 2;    // Self diagnose voltage value: (Vref x 1/2) (Not used)
+    S12AD.ADCER.BIT.DIAGLD  = 1;    // Self diagnose voltage:       fixed (Not used)
+    S12AD.ADCER.BIT.DIAGM   = 0;    // Self diagnose:               Disable
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADSTRGR: AD Start Trigger select Register
+    //------------------------------------------------------------
+    S12AD.ADSTRGR.BIT.TRSA  = 4;    // TRG0EN (MTU0/TRGE compare match)
+    S12AD.ADSTRGR.BIT.TRSB  = 0;    // Group B trigger:             ADTRG0# (Not used)
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADEXICR: AD Extended Input Control Register
+    //------------------------------------------------------------
+    S12AD.ADEXICR.BIT.OCSAD = 0;    // Addtion mode of internal Vref:   No
+    S12AD.ADEXICR.BIT.TSS   = 0;    // (Although RX220 does not have TSS bit.)
+    S12AD.ADEXICR.BIT.OCS   = 0;    // AD convert internal Vref:        No  // Must be 0 for single scan mode.
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADSSTR: AD Sampling State Register
+    //------------------------------------------------------------
+    // Necessary:
+    //  12 <= n <= 255
+    //  T>0.4us  ;Sampling time T=n*(1/fclk)=n*50ns     // fclk=20MHz
+    //------------------------------------------------------------
+    // n=255, T=12.75us     // Tentative
+    //------------------------------------------------------------
+    n=255;
+    S12AD.ADSSTR0   = n;    // AN000
+    //
+    S12AD.ADSSTRL   = n;    // AN008--AN015
+    S12AD.ADSSTRT   = n;    // (Although RX220 does not have Temperature sensor.)
+    S12AD.ADSSTRO   = n;    // internal vref
+    //
+    S12AD.ADSSTR1   = n;    // AN001
+    S12AD.ADSSTR2   = n;    // AN002
+    S12AD.ADSSTR3   = n;    // AN003
+    S12AD.ADSSTR4   = n;    // AN004
+    S12AD.ADSSTR5   = n;    // AN005
+    S12AD.ADSSTR6   = n;    // AN006
+    S12AD.ADSSTR7   = n;    // AN007
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // ADDISCR: AD Disconnect Detect Control Register
+    //------------------------------------------------------------
+    S12AD.ADDISCR.BIT.ADNDIS = 0;   // Assist Disconnect Detect: No
+    //------------------------------------------------------------
+
+}
+
+void ADC_trigger_enable(int trig_enable) {
+    if (trig_enable==1) {
+        S12AD.ADCSR.BIT.TRGE  = 1;  // Enable  trigger for ADC start
+    } else {
+        S12AD.ADCSR.BIT.TRGE  = 0;  // Disable trigger for ADC start
+    }
+}
+
+//------------------------------------------------------------
+// Port Mode Register: reset all ports' mode to be general ports,
+// temporarily.
+//------------------------------------------------------------
+void    PORT_PMR_reset(void)
+{
+    PORT0.PMR.BYTE      = 0;
+    PORT1.PMR.BYTE      = 0;
+    PORT2.PMR.BYTE      = 0;
+    PORT3.PMR.BYTE      = 0;
+    PORT4.PMR.BYTE      = 0;
+    PORT5.PMR.BYTE      = 0;
+    PORTA.PMR.BYTE      = 0;
+    PORTB.PMR.BYTE      = 0;
+    PORTC.PMR.BYTE      = 0;
+    PORTD.PMR.BYTE      = 0;
+    PORTE.PMR.BYTE      = 0;
+    PORTH.PMR.BYTE      = 0;
+    PORTJ.PMR.BYTE      = 0;
+}
+
+//------------------------------------------------------------
+// MPC(Multi Pin Function Controller)
+//------------------------------------------------------------
 //
-// HOGE
+//  TXD1, RXD1
+//  ADC001..015 (12ch in total)
+//
+void MPC_init(void)
+{
+    //------------------------------------------------------------
+    // Write Protect Registser
+    //------------------------------------------------------------
+    MPC.PWPR.BIT.B0WI   = 0;    // Enable writing PFSWE bit
+    MPC.PWPR.BIT.PFSWE  = 1;    // Enable writing PFS register
+    //------------------------------------------------------------
+
+    //============================================================
+    // Set pin: SCI/TXD1, RXD1
+    //============================================================
+    MPC.P26PFS.BIT.PSEL = 0xA;  // Pin select: TXD1
+    //--------------------
+    MPC.P30PFS.BIT.PSEL = 0xA;  // Pin select: RXD1
+    MPC.P30PFS.BIT.ISEL = 0;    // Interrupt select: not used as IRQ0 input.
+    //------------------------------------------------------------
+
+    //============================================================
+    // Set pin: ADC/AN000..AN013
+    //============================================================
+    // Port 4   // ASEL: Analog select  1/0: analog/not
+    MPC.P40PFS.BIT.ASEL = 1;    //  AN000
+    MPC.P41PFS.BIT.ASEL = 1;    //  AN001
+    MPC.P42PFS.BIT.ASEL = 1;    //  AN002
+    MPC.P43PFS.BIT.ASEL = 1;    //  AN003
+    MPC.P44PFS.BIT.ASEL = 1;    //  AN004
+    // MPC.P45PFS.BIT.ASEL = 1;    //  AN005 NA
+    MPC.P46PFS.BIT.ASEL = 1;    //  AN006
+    // MPC.P47PFS.BIT.ASEL = 1;    //  AN007 NA
+    //---
+    // Port E   // ASEL: Analog select  1/0: analog/not
+    MPC.PE0PFS.BIT.ASEL = 1;    //  AN008
+    MPC.PE1PFS.BIT.ASEL = 1;    //  AN009
+    MPC.PE2PFS.BIT.ASEL = 1;    //  AN010
+    MPC.PE3PFS.BIT.ASEL = 1;    //  AN011
+    MPC.PE4PFS.BIT.ASEL = 1;    //  AN012
+    MPC.PE5PFS.BIT.ASEL = 1;    //  AN013
+    // MPC.PE6PFS.BIT.ASEL = 1;    //  AN014 NA
+    // MPC.PE7PFS.BIT.ASEL = 1;    //  AN015 NA
+    //---
+    // Port 1-6
+    MPC.P16PFS.BIT.PSEL = 0;    // Pin select: Hi-z,  not used as ADTRG0#
+    //------------------------------------------------------------
+
+    //------------------------------------------------------------
+    // Write Protect Registser
+    //------------------------------------------------------------
+    MPC.PWPR.BIT.PFSWE  = 0;    // Prohibit writing PFS register
+    MPC.PWPR.BIT.B0WI   = 1;    // Prohibit writing PFSWE bit
+    //------------------------------------------------------------
+}
+
+//------------------------------------------------------------
+// Port Mode Register: set ports' mode to be peripheral
+//------------------------------------------------------------
+void    PORT_PMR_set(void)
+{
+    // SCI1
+    PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
+    PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
+
+    // ADC
+    PORT4.PMR.BYTE      = 0x5F; //  0101_1111: AN ch:[x6x4_3210]
+    PORTE.PMR.BYTE      = 0x3F; //  0011_1111: AN ch:[xxDC_BA98]
+}
+
 
 //============================================================
 // Hardware setup
@@ -323,7 +541,7 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // Protect Control Register
     //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x0B;     // Write-enable all 
+    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x0B;     // Write-enable all
 
     //----------------------------------------------------------------------
     // Operating Power Consumption Control Register
@@ -350,7 +568,7 @@ void hwsetup(void)
     //----------------------------------------------------------------------
     // Select Clock source      šRun‘O‚É‚±‚ê‚ªæ‚Å‚æ‚¢‚Ì‚©H
     SYSTEM.SCKCR3.WORD      = 0x0200;   // 0x0100: HOCO (Freq accuracy: +/- 1%)
-                                        // 0x0200:*MAIN 20MHz Xtal 
+                                        // 0x0200:*MAIN 20MHz Xtal
                                         // 0x0300: SUB
     //----------------------------------------------------------------------
     SYSTEM.HOCOCR2.BYTE     = 0;        // HOCO control register2: freq select
@@ -364,36 +582,34 @@ void hwsetup(void)
     SYSTEM.HOCOCR.BIT.HCSTP     = 1;    // HOCO         (32--50MHz; +/-1%)
     //----------------------------------------------------------------------
 
-    //======================================================================
-    // Port setting
-    //======================================================================
-	PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
-                                //      1 0 1 1     // 0: input, 1: output 
-	PORTH.PODR.BYTE     =0x00;
-    //----------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////
+    PORT_PMR_reset();   // Port Mode Register: reset to use all pins as ports, temporarily.
 
-    //======================================================================
-    // MTU2a setting
-    //======================================================================
-    MTU2a_init();
-    MTU2a_ch0_restart();
+        PORT_init();
+        PORT_set_input_for_ADC();
 
-    //======================================================================
-    // SCI setting
-    //======================================================================
-    sci_init();
+        MTU2a_init();
+        MTU2a_ch0_restart();
+
+        SCI_init();
+
+        ADC_init();
+
+        MPC_init(); // Multi Pin Funciton Controller
+    PORT_PMR_set(); // Port Mode Register: set to use specified perpherals' interface.
+    ////////////////////////////////////////////////////////////////////////
 
     //----------------------------------------------------------------------
     // Protect Control Register
     //----------------------------------------------------------------------
-    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x00;     // Write-protect all 
+    SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x00;     // Write-protect all
 }
 
 void    gvar_init(void) {
-    g_mtu2_count = 0;
-    g_ms_count   = 0;
-    g_led0       = 0;
-    g_led1       = 0;
+    g_sys_count = 0;
+    g_ms_count  = 0;
+    g_led0      = 0;
+    g_led1      = 0;
 }
 
 void main(void)
@@ -406,17 +622,28 @@ void main(void)
     gvar_init();
     hwsetup();
 
-    //------------------------------------------------------------
+    //============================================================
     // Interrupt Controller setting
+    //============================================================
+    // Interrupt Priority Level
+    //  0:      prohibit interrupt
+    //  1--15:  larger --> higher priority
     //------------------------------------------------------------
-    IPR(MTU0, TGIA0) = 2;   // Interrupt Priority Level
-    IEN(MTU0, TGIA0) = 1;   // Interrupt Enable
+    IPR(MTU0,   TGIA0)      = 2;
+    IPR(S12AD,  S12ADI0)    = 3;
+    //------------------------------------------------------------
+    // Interrupt enable
+    //------------------------------------------------------------
+    IEN(MTU0,   TGIA0)      = 0;    // Disable MTU0 interrupt
+    IEN(S12AD,  S12ADI0)    = 1;    // Enable S12AD interrupt
+    //------------------------------------------------------------
+
+    ADC_trigger_enable(1);
 
     //------------------------------------------------------------
     // Program main
     //------------------------------------------------------------
-
-	while(1) {
+    while(1) {
         sw_slide = PORTH.PIDR.BIT.B2;
         switch(sw_slide) {
             case 0:
@@ -427,7 +654,7 @@ void main(void)
                 break;
         }
         g_led1 = (g_ms_count<500) ? 1 : 0;
-	}
+    }
 }
 
 #ifdef __cplusplus
