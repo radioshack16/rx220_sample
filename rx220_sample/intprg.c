@@ -30,6 +30,8 @@
 #include "vect.h"
 #include "iodefine.h"
 
+#include "util.h"
+
 #pragma section IntPRG
 
 extern int     g_sys_count;
@@ -155,12 +157,15 @@ void Excep_RTC_PRD(void){  }
 //------------------------------------------------------------
 void Excep_S12AD0_S12ADI0(void) {
     int d;
+    int ad;
 
     g_sys_count++;
     g_ms_count = (g_ms_count>=1000) ? 0 : (g_ms_count+1);
 
     if ((g_ms_count%2)==0) {
-        SCI1.TDR = 'A';
+        ad = S12AD.ADDR0;
+        d = b4toc(ad>>8);
+        SCI1.TDR = d;
     }
 
     //------------------------------------------------------------
