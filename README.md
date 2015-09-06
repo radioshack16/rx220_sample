@@ -9,6 +9,7 @@ Small sample C program as a HEW project for Akizuki AE-RX220 development board
   every 2ms
 - LED1/2 on/off with 1s period
 - Slide switch controls LED2
+
 -----
 Blog : http://solar-club.jp/member/radioshack16/
 -----
