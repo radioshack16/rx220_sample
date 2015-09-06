@@ -1,4 +1,4 @@
-Optimizing Linkage Editor (V.10.02.00.000)        05-Sep-2015 12:10:50
+Optimizing Linkage Editor (V.10.02.00.000)        06-Sep-2015 12:27:11
 
 *** Options ***
 
@@ -16,6 +16,7 @@ Optimizing Linkage Editor (V.10.02.00.000)        05-Sep-2015 12:10:50
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\resetprg.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\sbrk.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\util.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\vecttbl.obj"
 -library="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.lib"
 -output="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.abs"
@@ -62,15 +63,15 @@ D_2
 D
                                   ffff8554  ffff8557         4   4
 P
-                                  ffff8558  ffff89e7       490   1
+                                  ffff8558  ffff8a42       4eb   1
 PIntPRG
-                                  ffff89e8  ffff8b2f       148   1
+                                  ffff8a43  ffff8b9d       15b   1
 W_1
-                                  ffff8b30  ffff8b30         0   1
+                                  ffff8b9e  ffff8b9e         0   1
 W_2
-                                  ffff8b30  ffff8b30         0   2
+                                  ffff8b9e  ffff8b9e         0   2
 W
-                                  ffff8b30  ffff8b30         0   4
+                                  ffff8ba0  ffff8ba0         0   4
 $ADDR_C_FFFFFF80
                                   ffffff80  ffffff83         4   1
 FIXEDVECT
