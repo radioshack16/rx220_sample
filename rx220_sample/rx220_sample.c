@@ -289,14 +289,22 @@ void SCI_init(void) {
 // ADC
 //============================================================
 // Data:                12bit
+// Ch count:            12
+//                      4 of 16ch are not assigned for 64-pin chip.
+//---
+// AD Data Register:    ADDR0-ADDR15
+//---
 // Data Alignment:      right aligned in 16bit
 // ADC start trigger:   TRG0EN(MTU0.TGRE compare match),
 //                      1ms period
-// Ch count:            12
 // Mode:                single scan
-// Interrupt:           generate interrupt requestS12ADI0
+// Interrupt:           generate interrupt request S12ADI0
 //                      on the end of scan
-//
+//---
+// registers not used:
+//  ADRD:   AD Self Diagnose Data register
+//  ADOCDR: AD Internal Reference Data Register
+//---
 // LQFP64:
 //  AN00:   pin60:  (PortXX)
 //  AN01:   pin58:  (PortXX)
@@ -419,13 +427,6 @@ void ADC_init(void) {
     S12AD.ADDISCR.BIT.ADNDIS = 0;   // Assist Disconnect Detect: No
     //------------------------------------------------------------
 
-    //------------------------------------------------------------
-    // Comment on registers:
-    // ADRD:            AD Self Diagnose Data register      (Not used, but can be used)
-    // ADOCDR:          AD Internal Reference Data Register (Not used)
-    //---
-    // ADDR0-ADDR15:    AD Data Register:   TO BE READ.
-    //---
 }
 
 void ADC_trigger_enable(int trig_enable) {
