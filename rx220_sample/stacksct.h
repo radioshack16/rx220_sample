@@ -9,4 +9,5 @@
 /*  NOTE:THIS IS A TYPICAL EXAMPLE.                                    */
 /*                                                                     */
 /***********************************************************************/
-#pragma stacksize si=0x300      
+// #pragma stacksize si=0x300      
+#pragma stacksize si=0x600          // 20160428
