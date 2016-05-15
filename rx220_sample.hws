@@ -3,12 +3,12 @@
 [DATABASE_VERSION]
 "11.0" 
 [WORKSPACE_DETAILS]
-"rx220_sample" "C:\hewwork\rx220_sample" "C:\hewwork\rx220_sample\rx220_sample.hws" "RX" "Renesas RX Standard" 
+"rx220_sample" "C:\githubwork\rx220_sample" "C:\githubwork\rx220_sample\rx220_sample.hws" "RX" "Renesas RX Standard" 
 [SHARED_WORKSPACE_CONTROL_STATUS]
 "" "" "" 
 "" "" "" 
 [PROJECTS]
-"rx220_sample" "C:\hewwork\rx220_sample\rx220_sample" "C:\hewwork\rx220_sample\rx220_sample\rx220_sample.hwp" 0 
+"rx220_sample" "C:\githubwork\rx220_sample\rx220_sample" "C:\githubwork\rx220_sample\rx220_sample\rx220_sample.hwp" 0 
 [INFORMATION]
 "ワークスペース情報がありません" 
 [SCRAP]
