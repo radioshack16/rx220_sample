@@ -117,10 +117,15 @@
 "Object file" "Renesas OptLinker" "Renesas RX C/C++ Compiler" 
 [PROJECT_FILES]
 "C:\githubwork\rx220_sample\rx220_sample\dbsct.c" "User" "C source file" 2 
+"C:\githubwork\rx220_sample\rx220_sample\dft.c" "User" "C source file" 2 
+"C:\githubwork\rx220_sample\rx220_sample\fft_n_small.c" "User" "C source file" 2 
+"C:\githubwork\rx220_sample\rx220_sample\fft_real_n_recur.c" "User" "C source file" 2 
 "C:\githubwork\rx220_sample\rx220_sample\intprg.c" "User" "C source file" 2 
 "C:\githubwork\rx220_sample\rx220_sample\resetprg.c" "User" "C source file" 2 
 "C:\githubwork\rx220_sample\rx220_sample\rx220_sample.c" "User" "C source file" 2 
 "C:\githubwork\rx220_sample\rx220_sample\sbrk.c" "User" "C source file" 2 
+"C:\githubwork\rx220_sample\rx220_sample\sci.c" "User" "C source file" 2 
+"C:\githubwork\rx220_sample\rx220_sample\stack_var_adrs.c" "User" "C source file" 2 
 "C:\githubwork\rx220_sample\rx220_sample\util.c" "User" "C source file" 2 
 "C:\githubwork\rx220_sample\rx220_sample\vecttbl.c" "User" "C source file" 2 
 [FOLDER]
@@ -133,7 +138,7 @@
 "DefaultSession" "C:\githubwork\rx220_sample\rx220_sample\DefaultSession.hsf" 0 
 [GENERAL_DATA_SESSION_DefaultSession]
 [OPTIONS_Debug_Renesas OptLinker]
-"Single Shot" "0ee709f2e98e0d10" 5 
+"Single Shot" "0ef1442470ea1d10" 5 
 [OPTIONS_Debug_Renesas RX Assembler]
 "Assembly source file" "017f9219ad2c0d10" 4 
 "Linkage symbol file" "017f9219ad2c0d10" 4 
@@ -141,16 +146,21 @@
 "C source file" "017f9219ad2c0d10" 2 
 "C++ source file" "0ae34d8acd2c0d10" 3 
 "C:\githubwork\rx220_sample\rx220_sample\dbsct.c" "017f9219ad2c0d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\dft.c" "0403ef4b01491d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\fft_n_small.c" "00e1659492b91d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\fft_real_n_recur.c" "05e130d836d91d10" 2 
 "C:\githubwork\rx220_sample\rx220_sample\intprg.c" "017f9219ad2c0d10" 2 
 "C:\githubwork\rx220_sample\rx220_sample\resetprg.c" "017f9219ad2c0d10" 2 
 "C:\githubwork\rx220_sample\rx220_sample\rx220_sample.c" "017f9219ad2c0d10" 2 
 "C:\githubwork\rx220_sample\rx220_sample\sbrk.c" "017f9219ad2c0d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\sci.c" "01e7ce7ae5291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\stack_var_adrs.c" "0ec8cd7370ea1d10" 2 
 "C:\githubwork\rx220_sample\rx220_sample\util.c" "0ed0e8f2e98e0d10" 2 
 "C:\githubwork\rx220_sample\rx220_sample\vecttbl.c" "017f9219ad2c0d10" 2 
 [OPTIONS_Debug_Renesas RX C/C++ Library Generator]
 "Single Shot" "017f9219ad2c0d10" 1 
 [OPTIONS_Debug_Renesas RX Configurator]
-"Single Shot" "0ed0e8f2e98e0d10" 6 
+"Single Shot" "0ef1442470ea1d10" 6 
 [OPTIONS_Debug]
 "" 0 
 "[S|OUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [V|VERSION|1] [S|CPU|RX200] [S|ENDIAN|LITTLE] [S|ROUND|NEAREST] [S|DBL_SIZE|4] [B|SIGNED_CHAR|0] [B|SIGNED_BITFIELD|0] [S|BIT_ORDER|RIGHT] [S|FINT_REGISTER|0] [S|BRANCH|24] [S|LANG|C] [B|RUNTIME|1] [B|CTYPE|1] [B|MATH|1] [B|MATHF|1] [B|STDARG|0] [B|STDIO|1] [B|STDLIB|1] [B|STRING|1] [B|IOS|0] [B|NEW|1] [B|COMPLEX|0] [B|CPPSTRING|0] [S|MODE|BUILD/CHANGED]" 1 
@@ -164,33 +174,40 @@
 [LINKAGE_ORDER_Debug]
 [GENERAL_DATA_CONFIGURATION_Debug]
 [OPTIONS_Release_Renesas OptLinker]
-"Single Shot" "0ee709f2e98e0d10" 5 
+"Single Shot" "0ef1442470ea1d10" 5 
 [OPTIONS_Release_Renesas RX Assembler]
 "Assembly source file" "017f9219ad2c0d10" 4 
 "Linkage symbol file" "017f9219ad2c0d10" 4 
 [OPTIONS_Release_Renesas RX C/C++ Compiler]
-"C source file" "017f9219ad2c0d10" 2 
-"C++ source file" "0ae34d8acd2c0d10" 3 
-"C:\githubwork\rx220_sample\rx220_sample\dbsct.c" "017f9219ad2c0d10" 2 
-"C:\githubwork\rx220_sample\rx220_sample\intprg.c" "017f9219ad2c0d10" 2 
-"C:\githubwork\rx220_sample\rx220_sample\resetprg.c" "017f9219ad2c0d10" 2 
-"C:\githubwork\rx220_sample\rx220_sample\rx220_sample.c" "017f9219ad2c0d10" 2 
-"C:\githubwork\rx220_sample\rx220_sample\sbrk.c" "017f9219ad2c0d10" 2 
-"C:\githubwork\rx220_sample\rx220_sample\util.c" "0ed0e8f2e98e0d10" 2 
-"C:\githubwork\rx220_sample\rx220_sample\vecttbl.c" "017f9219ad2c0d10" 2 
+"C source file" "01440a4f38291d10" 2 
+"C++ source file" "01440a4f38291d10" 3 
+"C:\githubwork\rx220_sample\rx220_sample\dbsct.c" "01440a4f38291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\dft.c" "0403ef4b01491d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\fft_n_small.c" "00e1659492b91d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\fft_real_n_recur.c" "05e130d836d91d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\intprg.c" "01440a4f38291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\resetprg.c" "01440a4f38291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\rx220_sample.c" "01440a4f38291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\sbrk.c" "01440a4f38291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\sci.c" "01440a4f38291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\stack_var_adrs.c" "0ec8cd7370ea1d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\util.c" "01440a4f38291d10" 2 
+"C:\githubwork\rx220_sample\rx220_sample\vecttbl.c" "01440a4f38291d10" 2 
 [OPTIONS_Release_Renesas RX C/C++ Library Generator]
-"Single Shot" "017f9219ad2c0d10" 1 
+"Single Shot" "0c3c3165ffe91d10" 1 
 [OPTIONS_Release_Renesas RX Configurator]
-"Single Shot" "0ed0e8f2e98e0d10" 6 
+"Single Shot" "0ef1442470ea1d10" 6 
 [OPTIONS_Release]
 "" 0 
-"[S|OUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [V|VERSION|1] [S|CPU|RX200] [S|ENDIAN|LITTLE] [S|ROUND|NEAREST] [S|DBL_SIZE|4] [B|SIGNED_CHAR|0] [B|SIGNED_BITFIELD|0] [S|BIT_ORDER|RIGHT] [S|FINT_REGISTER|0] [S|BRANCH|24] [S|LANG|C] [B|RUNTIME|1] [B|CTYPE|1] [B|MATH|1] [B|MATHF|1] [B|STDARG|0] [B|STDIO|1] [B|STDLIB|1] [B|STRING|1] [B|IOS|0] [B|NEW|1] [B|COMPLEX|0] [B|CPPSTRING|0] [S|MODE|BUILD/CHANGED]" 1 
 "[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX200] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 6 
 "[V|VERSION|1] [B|DEBUG|0] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [B|LISTFILE|0] [S|CPU|RX200] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 4 
-"[V|VERSION|1] [B|DEBUG|0] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [B|LISTFILE|0] [S|CPU|RX200] [S|ENDIAN|LITTLE] [S|ROUND|NEAREST] [S|DBL_SIZE|4] [B|SIGNED_CHAR|0] [B|SIGNED_BITFIELD|0] [S|BIT_ORDER|RIGHT] [S|FINT_REGISTER|0] [S|BRANCH|24]" 2 
-"[V|VERSION|1] [S|LANG|CPP] [B|SJIS|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [B|SIZE|1] [B|MAP|0] [I|INLINE|100] [I|LOOP|2] [S|MISRA2004|ALL] [S|MISRA2004RULEFILE|^"$(CONFIGDIR)\$(PROJECTNAME).rde^"] [S|CPU|RX200] [S|BASE|00000000=NONE] [I|PID|16]
+"[V|VERSION|1] [S|LANG|CPP] [B|SJIS|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [B|SIZE|1] [B|MAP|0] [I|INLINE|100] [I|LOOP|2] [S|MISRA2004|ALL] [S|MISRA2004RULEFILE|^"$(CONFIGDIR)\$(PROJECTNAME).rde^"] [S|CPU|RX200] [S|DBL_SIZE|8] [S|BASE|00000000=NONE] [I|PID|16]
 " 3 
-"[V|VERSION|6] [S|FORM|STYPE] [S|BYTE_COUNT_VALUE|FF] [B|DEBUG|0] [S|ROM|(D,R)|(D_1,R_1)|(D_2,R_2)] [S|CRC|NONE|DEFAULT|00000000] [B|LIST|1] [S|LIST|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|SHOW|METHODCUSTOM|] [S|OUTPUT|^"$(CONFIGDIR)\$(PROJECTNAME).mot^"] [I|SPACE|^"FF^"] [B|OPTIMIZE|0] [S|START|B_1,R_1,B_2,R_2,B,R,SI(01000)|PResetPRG(0FFFF8000)|C_1,C_2,C,C$*,D_1,D_2,D,P,PIntPRG,W*(0FFFF8100)|FIXEDVECT(0FFFFFFD0)] [S|MEMORY|HIGH]
+"[V|VERSION|1] [S|LANG|C] [B|SJIS|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [B|SIZE|1] [B|MAP|0] [I|INLINE|100] [I|LOOP|2] [S|MISRA2004|ALL] [S|MISRA2004RULEFILE|^"$(CONFIGDIR)\$(PROJECTNAME).rde^"] [S|CPU|RX200] [S|DBL_SIZE|8] [S|BASE|00000000=NONE] [I|PID|16]
+" 2 
+"[V|VERSION|1] [S|MODE|BUILD/CHANGED] [S|EXISTOUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|RUNTIME|1] [B|CTYPE|1] [B|MATH|1] [B|STDARG|1] [B|STDIO|1] [B|STDLIB|1] [B|STRING|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|SPEED|1] [I|INLINE|100] [I|LOOP|2] [S|CPU|RX200] [S|DBL_SIZE|8] [S|BASE|00000000=NONE] [I|PID|16]
+" 1 
+"[V|VERSION|6] [S|PRELINK|SKIP] [S|FORM|STYPE] [S|BYTE_COUNT_VALUE|FF] [B|DEBUG|0] [S|ROM|(D,R)|(D_1,R_1)|(D_2,R_2)] [S|CRC|NONE|DEFAULT|00000000] [B|LIST|1] [S|LIST|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|SHOW|METHODCUSTOM|] [S|OUTPUT|^"$(CONFIGDIR)\$(PROJECTNAME).mot^"] [I|SPACE|^"FF^"] [B|OPTIMIZE|0] [S|START|B_1,R_1,B_2,R_2,B,R,SI(01000)|PResetPRG(0FFFC0000)|C_1,C_2,C,L,C$*,D_1,D_2,D,P,PIntPRG,W*(0FFFC0100)|FIXEDVECT(0FFFFFFD0)] [S|MEMORY|HIGH]
 " 5 
 [EXCLUDED_FILES_Release]
 [LINKAGE_ORDER_Release]
