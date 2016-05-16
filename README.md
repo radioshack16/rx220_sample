@@ -31,6 +31,9 @@ Other functions: (the same as <2nd sample>)
 - LED1/2 on/off with 1s period
 - Slide switch controls LED2
 
+------
+License: MIT License
+
 -----
 Blog : http://solar-club.jp/member/radioshack16/
 -----
