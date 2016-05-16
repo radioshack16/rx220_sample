@@ -9,8 +9,7 @@ On power up, DFT and FFT functions are tested and processing time is shown via s
   - Output:         0 to Nuquist frequency  
   - Precision:      double(8 or 4byte)  
     (Renesas tool HEW can handle double type as either 8 or 4 byte.)  
-  - Number of input data supported: **N=4(2^p)(3^q)(5^r)(7^s)**
-
+  - Number of input data supported: **N=4(2^p)(3^q)(5^r)(7^s)**  
     （4<=N<=128 and p, q, r and s is an integer >= 0）
   - Desimation type: decimation-in-time  
   - Radix:          mixed radix  
