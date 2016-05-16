@@ -21,6 +21,9 @@ Small sample C program as a HEW project for Akizuki AE-RX220 development board
         depending on its input parameter M, and the called
         radix-specific function calls the core function
         to perform sub-M FFT.
+ For performance result, see the
+    20160514_FFT_performance_on_RX621_RX220.pdf file.
+
 ------
 Other functions: (the same as <2nd sample>)
 - MTU2 generates 1ms signal and interrupt
@@ -33,6 +36,7 @@ Other functions: (the same as <2nd sample>)
 
 ------
 License: MIT License
+    See the LICENSE.txt file for details.
 
 -----
 Blog : http://solar-club.jp/member/radioshack16/
