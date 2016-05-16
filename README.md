@@ -2,27 +2,27 @@
 Small sample C program as a HEW project for Akizuki AE-RX220 development board
 ------
 <3rd sample>
-- DFT/FFT functions added.
-  On power up, DFT and/or FFT is tested and processing time is shown via serial port.
-  FFT function spec:
-    input:          real only
-    output:         0 to Nuquist frequency
-    precision:      double(8 or 4byte)
-    (Renesas tool HEW can handle double type as either 8 or 4 byte.)
-    N supoortd:     N=4*(2^p)(3^q)(5^r)(7^s),
-                    where 4<= N <=128 and
-                    p, q, r and s is an integer >= 0.
-    desimation type: decimation-in-time
-    radix:          mixed radix
-        intermediate stage: 8, 7, 5, 4, 3, 2
-        terminal stage:     16, 8, 5, 4, 3, 2
-    implementation: recursively implemented:
+- DFT/FFT functions added.  
+  On power up, DFT and/or FFT is tested and processing time is shown via serial port.  
+  FFT function spec:  
+    input:          real only  
+    output:         0 to Nuquist frequency  
+    precision:      double(8 or 4byte)  
+    (Renesas tool HEW can handle double type as either 8 or 4 byte.)  
+    N supoortd:     N=4*(2^p)(3^q)(5^r)(7^s),  
+                    where 4<= N <=128 and  
+                    p, q, r and s is an integer >= 0.  
+    desimation type: decimation-in-time  
+    radix:          mixed radix  
+        intermediate stage: 8, 7, 5, 4, 3, 2  
+        terminal stage:     16, 8, 5, 4, 3, 2  
+    implementation: recursively implemented:  
         a core function calls one of radix-specific functions
         depending on its input parameter M, and the called
         radix-specific function calls the core function
-        to perform sub-M FFT.
- For performance result, see the
-    20160514_FFT_performance_on_RX621_RX220.pdf file.
+        to perform sub-M FFT.  
+ For performance result, see the  
+    20160514_FFT_performance_on_RX621_RX220.pdf file.  
 
 ------
 Other functions: (the same as <2nd sample>)
@@ -39,5 +39,5 @@ License: MIT License
     See the LICENSE.txt file for details.
 
 -----
-Blog : http://solar-club.jp/member/radioshack16/
+ Blog : http://solar-club.jp/member/radioshack16/
 -----
