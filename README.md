@@ -4,7 +4,7 @@ Small sample C program as a HEW project for Akizuki AE-RX220 development board
 <3rd sample>
 - DFT/FFT functions added.
   On power up, DFT and/or FFT is tested and processing time is shown via serial port.
-- FFT function spec:
+  FFT function spec:
     input:          real only
     output:         0 to Nuquist frequency
     precision:      double(8 or 4byte)
@@ -22,7 +22,7 @@ Small sample C program as a HEW project for Akizuki AE-RX220 development board
         radix-specific function calls the core function
         to perform sub-M FFT.
 ------
-Other functions: the same as <2nd sample>
+Other functions: (the same as <2nd sample>)
 - MTU2 generates 1ms signal and interrupt
 - ADC converts 12 ch of analog input in scan mode
 - ADC generates an interrupt on the end of scan
