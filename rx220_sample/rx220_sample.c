@@ -11,7 +11,7 @@
 /***********************************************************************/
 
 //----------------------------------------
-// Akizuki RX220 CPU board
+// Akizuki RX220 CPU board      // LQFP64
 // CPU chip: RF52206BDFM
 // ROM 256KB   // FFFC0000h`FFFFFFFFh
 // RAM 16KB    // 00000000h`00003FFFh
@@ -19,9 +19,14 @@
 
 #include "iodefine.h"
 
+#include "ports.h"
 #include "util.h"           // tcnt_show(), ms_abs_count_show()
 #include "sci.h"            // SCIprintf()
-#include "mtu.h"            // SCIprintf()
+#include "mtu.h"
+#include "cmt.h"
+#include "i2c.h"
+#include "oledsl.h"
+#include "lcd_aqm.h"
 #include "etc.h"
 #include "dft.h"
 #include "fft_real_n_recur.h"
@@ -69,9 +74,32 @@ short   g_adc_in_b[120*6];
 //======================================================================
 void PORT_init(void)
 {
-    PORTH.PDR.BYTE      =0xfb;  // bit: 3 2 1 0     // Port Direction Register
-                                //      O I O O     // Output/Input -> 1/0
-    PORTH.PODR.BYTE     =0x00;
+    //------------------------------------------------------------
+    // LEDs and slide-switch on the BASE board
+    //------------------------------------------------------------
+    // PH0: LED1
+    // PH1: LED2
+    // PH3: Slide-switch
+    PORTH.PDR.BYTE      = 0xFB; // bit: 3 2 1 0     // Port Direction Register
+                                //      1 0 1 1     // 0/1 -> Input/Output
+    PORTH.PODR.BYTE     = 0x00;
+        // Below are the same as power-on reset:
+        PORTH.PCR.BYTE      = 0x00; // Pull-up register: NO
+
+    //------------------------------------------------------------
+    // I2C ports for OLED character display
+    //------------------------------------------------------------
+    // PB0: output  SDAO_X
+    // PB1: input   SDAI
+    // PB3: output  SCL_X       // PB2 does not exist.
+    PORTB.PDR.BYTE      = 0xF9; // bit: 3 2 1 0     // Port Direction Register
+                                //      1 0 0 1     // 0/1 -> Input/Output
+    PORTB.PODR.BYTE     = 0x00;
+        // Below are the same as power-on reset:
+        PORTB.ODR0.BYTE     = 0x00; // CMOS output(Not open-drain)
+        PORTB.ODR1.BYTE     = 0x00; // CMOS output(Not open-drain)
+        PORTB.PCR.BYTE      = 0x00; // Pull-up register: NO
+        PORTB.DSCR.BYTE     = 0x00; // Drive-capability: NORMAL
 }
 //------------------------------------------------------------
 // Set port direction as input not to affect ADC performance
@@ -180,7 +208,6 @@ void MTU2_init(void)
     //------------------------------------------------------------
     // Release module stop
     //------------------------------------------------------------
-    //SYSTEM.MSTPCRA.BIT.MSTPA9  = 0; // 0: release stopped MTU module to run
     MSTP_MTU = 0;
 
     //------------------------------------------------------------
@@ -582,6 +609,9 @@ void MPC_init(void)
 //------------------------------------------------------------
 void    PORT_PMR_set(void)
 {
+    // Set '1', if a pin to be used as some specific peripheral,
+    // other than general port.
+
     // SCI1
     PORT2.PMR.BIT.B6    = 1;    // SCI1/TXD.
     PORT3.PMR.BIT.B0    = 1;    // SCI1/RXD.
@@ -674,6 +704,8 @@ void hwsetup(void)
         MTU2_init();
         MTU2_ch0_restart();
 
+        CMT_init();
+
         SCI_init();
 
         ADC_init();
@@ -686,6 +718,11 @@ void hwsetup(void)
     // Protect Control Register
     //----------------------------------------------------------------------
     SYSTEM.PRCR.WORD        = (PRCR_PRKEY<<8)+0x00;     // Write-protect all
+
+    //----------------------------------------------------------------------
+    i2c_init();
+    OLED_init();
+    LCD_AQM_init();
 }
 
 void    gvar_init(void)
@@ -716,14 +753,23 @@ int     *intp_monitor_min_save;
 int     dft_n;
 //int     dft_n_prev;
 
-int     i;
+int         i;
+volatile    int j;
 int     preset_no;
 
 int     ms_abs_count_prev;
 
+    //============================================================
+    // Interrupt disable
+    //============================================================
+    IEN(CMT1,   CMI1)       = 0;    // Disable CMT1 interrupt
+    IEN(MTU0,   TGIA0)      = 0;    // Disable MTU0 interrupt
+    IEN(S12AD,  S12ADI0)    = 0;    // Disable S12AD interrupt
     //------------------------------------------------------------
+
+    //============================================================
     // Init
-    //------------------------------------------------------------
+    //============================================================
     gvar_init();
     hwsetup();
 
@@ -739,7 +785,6 @@ int     ms_abs_count_prev;
     //------------------------------------------------------------
     // Interrupt enable
     //------------------------------------------------------------
-    IEN(MTU0,   TGIA0)      = 0;    // Disable MTU0 interrupt
     IEN(S12AD,  S12ADI0)    = 1;    // Enable S12AD interrupt
     //------------------------------------------------------------
 
@@ -748,6 +793,13 @@ int     ms_abs_count_prev;
     //------------------------------------------------------------
     // Program main
     //------------------------------------------------------------
+    // OLED test
+    OLED_locate(0,  0);     OLED_wrstr("0123456789ABCDEF");
+    OLED_locate(1,  0);     OLED_wrstr("Hello,");
+
+    LCD_AQM_locate(0,  0);  LCD_AQM_wrstr("0123456789ABCDEF");
+    LCD_AQM_locate(1,  0);  LCD_AQM_wrstr("World.");
+
     // Variable size
     SCIprintf("sizeof(short) =%d\n", sizeof(short));
     SCIprintf("sizeof(int)   =%d\n", sizeof(int));
@@ -787,11 +839,13 @@ int     ms_abs_count_prev;
     // DFT/FFT test
 switch(0) {
     default:
-    case 0:
+        // Skip DFT/FFT test
+        break;
+    case 1:
         //--------------------------------------------------------------------------------
         // Test of FFT over dft_n, using radix default
         for (dft_n=128;dft_n>=16;dft_n-=4) {
-            f_out_mon = PORTH.PIDR.BIT.B2;  // slide switch
+            f_out_mon = SLIDE_SWITCH;
             dft_init(dft_n);
             fft_real_n_init(dft_n);
             //dft_test(0, 1);     // DFT RAW
@@ -804,7 +858,7 @@ switch(0) {
         }
         //--------------------------------------------------------------------------------
         break;
-    case 1:
+    case 2:
         //--------------------------------------------------------------------------------
         // FFT Tests over radix presets (for deciding radix default)
         //dft_n_prev = 0;
@@ -832,7 +886,7 @@ switch(0) {
     // Main loop
     //------------------------------------------------------------
     while(1) {
-        sw_slide = PORTH.PIDR.BIT.B2;
+        sw_slide = SLIDE_SWITCH;
         switch(sw_slide) {
             case 0:
                 g_led0 = (g_ms_count>=500) ? 1 : 0;
@@ -848,6 +902,18 @@ switch(0) {
             intp_monitor_min_save = g_intp_monitor_min;
             SCIprintf("g_intp_monitor_min=%0Xh\n", intp_monitor_min_save);
         }
+
+        // Test PORTB
+        // for (i=0;i<100;i++) {
+        //     PORTB.PODR.BIT.B0 = 1;
+        //     PORTB.PODR.BIT.B3 = 0;
+        //     for (j=0;j<1000;j++);
+        //     PORTB.PODR.BIT.B0 = 0;
+        //     PORTB.PODR.BIT.B3 = 1;
+        //     for (j=0;j<2000;j++);
+        // }
+
+        // i2c_dbg_delay_test();   // NEVER RETURN.
     }
 }
 
