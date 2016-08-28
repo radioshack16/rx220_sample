@@ -1,4 +1,4 @@
-Optimizing Linkage Editor (V.10.02.00.000)        15-May-2016 17:37:38
+Optimizing Linkage Editor (V.10.02.00.000)        28-Aug-2016 12:28:48
 
 *** Options ***
 
@@ -11,11 +11,15 @@ Optimizing Linkage Editor (V.10.02.00.000)        15-May-2016 17:37:38
 -nooptimize
 -start=B_1,R_1,B_2,R_2,B,R,SI/01000,PResetPRG/0FFFC0000,C_1,C_2,C,L,C$*,D_1,D_2,D,P,PIntPRG,W*/0FFFC0100,FIXEDVECT/0FFFFFFD0
 -nologo
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\cmt.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\dbsct.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\dft.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\fft_n_small.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\fft_real_n_recur.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\i2c.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\intprg.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\lcd_aqm.obj"
+-input="C:\githubwork\rx220_sample\rx220_sample\Release\oledsl.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\resetprg.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\rx220_sample.obj"
 -input="C:\githubwork\rx220_sample\rx220_sample\Release\sbrk.obj"
@@ -56,29 +60,29 @@ C_2
 C
                                   fffc0860  fffc0a67       208   4
 L
-                                  fffc0a68  fffc11a8       741   4
+                                  fffc0a68  fffc11c4       75d   4
 C$DSEC
-                                  fffc11ac  fffc11cf        24   4
+                                  fffc11c8  fffc11eb        24   4
 C$BSEC
-                                  fffc11d0  fffc11e7        18   4
+                                  fffc11ec  fffc1203        18   4
 C$VECT
-                                  fffc11e8  fffc15e7       400   4
+                                  fffc1204  fffc1603       400   4
 D_1
-                                  fffc15e8  fffc1638        51   1
+                                  fffc1604  fffc1654        51   1
 D_2
-                                  fffc163a  fffc163a         0   2
+                                  fffc1656  fffc1656         0   2
 D
-                                  fffc163c  fffc18f7       2bc   4
+                                  fffc1658  fffc1913       2bc   4
 P
-                                  fffc18f8  fffc8e92      759b   1
+                                  fffc1914  fffc936e      7a5b   1
 PIntPRG
-                                  fffc8e93  fffc8fe7       155   1
+                                  fffc936f  fffc94c3       155   1
 W_1
-                                  fffc8fe8  fffc8fe8         0   1
+                                  fffc94c4  fffc94c4         0   1
 W_2
-                                  fffc8fe8  fffc90c1        da   2
+                                  fffc94c4  fffc959d        da   2
 W
-                                  fffc90c4  fffc90c4         0   4
+                                  fffc95a0  fffc95a0         0   4
 $ADDR_C_FFFFFF80
                                   ffffff80  ffffff83         4   1
 FIXEDVECT
