@@ -1,6 +1,16 @@
 # rx220_sample
 Small sample C program as a HEW project for Akizuki AE-RX220 development board
 ------
+# 4th sample
+## OLED, LCD character display unit controlled via I2C.
+![OLED/LCD 1602](./20160828_photo_oled_lcd_disp_example/1_OLED1602_LCD1602.jpg)  
+OLED 16x02: [SO1602AWGB-UC-WB-U] <http://akizukidenshi.com/catalog/g/gP-08276/>  
+LCD 16x02: [AE-AQM1602A(KIT)] <http://akizukidenshi.com/catalog/g/gK-08896/>
+
+ ![OLED1602+LCD0802](./20160828_photo_oled_lcd_disp_example/2_OLED1602_LCD0802.jpg)
+  LCD replaced with 08x02 version: [SSCI-015165] <https://www.switch-science.com/catalog/1516/>
+
+------
 # 3rd sample
 ## DFT/FFT functions added.  
 On power up, DFT and FFT functions are tested and processing time is shown via serial port.  
@@ -21,7 +31,7 @@ On power up, DFT and FFT functions are tested and processing time is shown via s
 
   - performance summary
     ![FFT(real) performance summary](./FFT_real_performance.png)
-    For further details, see the 20160514_FFT_performance_on_RX621_RX220.pdf file.  
+    For further details, see the 20160514_FFT_performance_on_RX621_RX220.pdf(./20160514_FFT_performance_on_RX621_RX220.pdf) file.
 
 ------
 # Other functions: (the same as the 2nd sample)
