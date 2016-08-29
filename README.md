@@ -31,7 +31,7 @@ On power up, DFT and FFT functions are tested and processing time is shown via s
 
   - performance summary
     ![FFT(real) performance summary](./FFT_real_performance.png)
-    For further details, see the 20160514_FFT_performance_on_RX621_RX220.pdf(./20160514_FFT_performance_on_RX621_RX220.pdf) file.
+    For further details, see [20160514_FFT_performance_on_RX621_RX220.pdf](20160514_FFT_performance_on_RX621_RX220.pdf).
 
 ------
 # Other functions: (the same as the 2nd sample)
