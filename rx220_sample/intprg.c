@@ -165,7 +165,7 @@ void Excep_S12AD0_S12ADI0(void) {
     }
 
     g_ms_abs_count++;
-    g_ms_count = (g_ms_count>=1000) ? 0 : (g_ms_count+1);
+    g_ms_count = (g_ms_count>=999) ? 0 : (g_ms_count+1);
 
     if (0) {    // debug monitor
         if ((g_ms_count%2)==0) {

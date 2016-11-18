@@ -199,8 +199,8 @@ double  MTU2_ch3_unit_in_sec(void)
 //---
 // ch3:     for elapsed time measurement
 //  input:  PCLK=20MHz xtal clock
-//          Preacale=1/256 ==> T=12.8us
-//              //Preacale=1/1024 ==> T=51.2us
+//          Prescale=1/256 ==> T=12.8us
+//              //Prescale=1/1024 ==> T=51.2us
 //  output: none
 //---
 void MTU2_init(void)
