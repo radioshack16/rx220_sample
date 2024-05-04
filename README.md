@@ -48,5 +48,3 @@ On power up, DFT and FFT functions are tested and processing time is shown via s
 - See the LICENSE.txt file for details.
 
 -----
-Blog : <http://solar-club.jp/member/radioshack16/>
------
